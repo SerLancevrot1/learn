@@ -3,16 +3,14 @@ package ru.learn.leet.code;
 public class RemoveDuplicatesFromSortedArray {
 
     public static int removeDuplicates(int[] nums) {
-        int res = 1;
-
-        for(int i = 1; i< nums.length; i++) {
+        int j = 1;
+        for (int i = 1; i < nums.length; i++) {
             if (nums[i] != nums[i - 1]) {
-                nums[res] = nums[i];
-                res++;
+                nums[j] = nums[i];
+                j++;
             }
         }
-
-        return res;
+        return j;
     }
 
     public static void main(String[] args) {

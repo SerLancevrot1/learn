@@ -1,31 +1,48 @@
 package ru.learn.leet.code;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.learn.leet.code.util.ListNode;
 
 public class MergeTwoSortedLists {
     public static ListNode mergeTwoLists(ListNode list1, ListNode list2) {
-        ListNode res = list1;
+        ListNode dummy = new ListNode();
+        ListNode curr = dummy;
 
-        if (list1 == null) {
-            return list2;
-        }
-
-        while (list1 != null && list2 != null) {
-            if (list1.val > list2.val) {
-                int min = list2.val;
-                int max = list1.val;
-                ListNode next = list1.next;
-                list1.val = min;
-                list1.next = new ListNode(max, next);
-            } else {
-                ListNode next = list1.next;
-                int temp = list2.val;
-                list1.next = new ListNode(temp, next);
+        while(list1 != null && list2 != null) {
+            if(list1.val > list2.val) {
+                curr.next = list2;
+                list2 = list2.next;
+            } else{
+                curr.next = list1;
+                list1 = list1.next;
             }
-            list1 = list1.next.next;
-            list2 = list2.next;
+            curr = curr.next;
         }
-        return res;
+
+        return dummy.next;
+    }
+
+    public boolean isPalindrome(String s) {
+        char[] chars = s.toCharArray();
+        List<Character> validChars = new ArrayList<>();
+        for (int i = 0; i < chars.length; i++) {
+            if (Character.isLetter(chars[i])) {
+                validChars.add(chars[i]);
+            }
+        }
+        int left = 0;
+        int right = validChars.size();
+
+        while(left < right) {
+            if (!validChars.get(left).equals(validChars.get(right))) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
     }
 
     public static void main(String[] args) {

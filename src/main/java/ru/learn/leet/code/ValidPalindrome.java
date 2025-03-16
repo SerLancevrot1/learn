@@ -7,22 +7,24 @@ public class ValidPalindrome {
 
 
     public static boolean isPalindrome(String s) {
-        List<Character> alphabet = new ArrayList<>(List.of('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
-                                                           'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2',
-                                                           '3', '4', '5', '6', '7', '8', '9'));
-        var chars = s.toUpperCase().toCharArray();
-
-        for(int i = 0; i < chars.length; i ++) {
-            if (!alphabet.contains(chars[i])) {
-                chars[i] = '!';
+        char[] chars = s.toUpperCase().toCharArray();
+        List<Character> validChars = new ArrayList<>();
+        for (int i = 0; i < chars.length; i++) {
+            if (Character.isLetter(chars[i]) || Character.isDigit(chars[i])) {
+                validChars.add(chars[i]);
             }
         }
-        String s1 = String.copyValueOf(chars).replace("!", "");
-        if (s1.equals(new StringBuilder(s1).reverse().toString())) {
-            return true;
-        } else {
-            return false;
+        int left = 0;
+        int right = validChars.size() - 1;
+
+        while(left < right) {
+            if (!validChars.get(left).equals(validChars.get(right))) {
+                return false;
+            }
+            left++;
+            right--;
         }
+        return true;
     }
 
     public static void main(String[] args) {
