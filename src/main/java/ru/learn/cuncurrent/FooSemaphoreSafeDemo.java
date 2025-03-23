@@ -1,11 +1,11 @@
 package ru.learn.cuncurrent;
 
-public class FooSafeDemo {
-// ПОРЯДОК ГАРАНТИРУЕТСЯ, ИНОГДА ВЫВОДИТСЯ ТОЛЬКО ПЕРВЫЙ, потому что DeadLock
+public class FooSemaphoreSafeDemo {
+
     public static void main(String[] args) {
-        Thread t1 = new Thread(FooSafe::first);
-        Thread t2 = new Thread(FooSafe::second);
-        Thread t3 = new Thread(FooSafe::third);
+        Thread t1 = new Thread(FooSemaphoreSafe::first);
+        Thread t2 = new Thread(FooSemaphoreSafe::second);
+        Thread t3 = new Thread(FooSemaphoreSafe::third);
 
         t1.start();
         t2.start();
