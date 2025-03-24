@@ -1,4 +1,4 @@
-package ru.learn.cuncurrent;
+package ru.learn.cuncurrent.lock;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;

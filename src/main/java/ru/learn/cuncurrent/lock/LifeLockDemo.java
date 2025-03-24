@@ -1,4 +1,4 @@
-package ru.learn.cuncurrent;
+package ru.learn.cuncurrent.lock;
 
 public class LifeLockDemo {
 

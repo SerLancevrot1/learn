@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SumTask extends RecursiveTask<Long> {
 
-    private final Integer THRESHOLD = 1000;
+    private static final Integer THRESHOLD = 1000;
 
     private final int[] arr;
 

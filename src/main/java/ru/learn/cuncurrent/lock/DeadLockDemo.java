@@ -1,4 +1,6 @@
-package ru.learn.cuncurrent;
+package ru.learn.cuncurrent.lock;
+
+import ru.learn.cuncurrent.SyncThread;
 
 import lombok.SneakyThrows;
 
