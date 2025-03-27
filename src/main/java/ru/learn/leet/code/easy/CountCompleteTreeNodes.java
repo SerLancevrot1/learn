@@ -7,7 +7,7 @@ public class CountCompleteTreeNodes {
         if (root == null) {
             return 0;
         }
-        Integer i = new Integer(0);
+        Integer i = 0;
         return count(root, i);
     }
 
