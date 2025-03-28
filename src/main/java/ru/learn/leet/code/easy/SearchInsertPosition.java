@@ -4,23 +4,25 @@ public class SearchInsertPosition {
 
     public static int searchInsert(int[] nums, int target) {
 
-        return search(nums, 0, nums.length - 1, target, 0);
+        return bs(nums, 0, nums.length - 1, target);
+
+
 
     }
 
-    private static int search(int[] nums, int start, int end, int target, int res) {
-        int mid = (end - start) / 2;
-        System.out.println(start + " "+ end + " "+ target + " "+ res);
-
-
-        if (nums[mid] > target) {
-            res = search(nums, start, mid, target, res);
-        } else if (nums[mid] < target) {
-            res = search(nums, mid, end, target, res);
-        } else {
-            return mid;
+    private static int bs(int[] nums, int start, int end, int target) {
+        if (start > end) {
+            return start;
         }
-        return res;
+        int middle = start + (end - start) / 2;
+
+        if (nums[middle] > target) {
+            return bs(nums, target, start, middle - 1);
+        } else if (nums[middle] < target) {
+            return bs(nums, target, middle + 1, end);
+        } else {
+            return middle;
+        }
     }
 
     public static void main(String[] args) {

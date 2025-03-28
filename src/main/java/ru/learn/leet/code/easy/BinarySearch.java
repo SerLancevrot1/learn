@@ -7,18 +7,22 @@ public class BinarySearch {
     }
 
     private static int bs(int[] arr, int target, int start, int end) {
-        int middle = (end - start) / 2;
+        System.out.println(start + " - " + end);
+        if (start > end) {
+            return -1;
+        }
+        int middle = start + (end - start) / 2;
 
         if (arr[middle] > target) {
-            return bs(arr, target, start, middle);
+            return bs(arr, target, start, middle - 1);
         } else if (arr[middle] < target) {
-            return bs(arr, target, middle, end);
+            return bs(arr, target, middle + 1, end);
         } else {
             return middle;
         }
     }
 
     public static void main(String[] args) {
-        System.out.println(binarySearch(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 9));
+        System.out.println(binarySearch(new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 0));
     }
 }
