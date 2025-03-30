@@ -1,5 +1,6 @@
 package ru.learn.stream.api;
 
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,16 +23,14 @@ public class MapTask {
         2 - 7
          */
 
-        /*
-        HashMap<Integer, Long> output = input
+        var q = input
                 .entrySet()
                 .stream()
-                .flatMap(entry -> {
-                    Integer key = entry.getKey();
-                    List<Long> val = entry.getValue();
-                    return val.stream().map(num -> Map.entry(num, key));
-                })
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        */
+                .flatMap(f -> f.getValue().stream().map(m ->  new AbstractMap.SimpleEntry<>(m, f.getKey())))
+                .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+        System.out.println(q);
+
+
+
     }
 }
