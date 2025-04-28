@@ -3,8 +3,7 @@
 ### Области памяти JVM
 - Stack
 - Heap
-- PermGen
-- Metaspace
+- Metaspace. Ранее PermGen. Хранит статику, такую как метаданные загруженных классов
 - Eden, New Generation, Old Generation и другие – специфичные для сборщика мусора части кучи, поколения.
 
 ![img.png](../../../../resources/pictures/img.png)
