@@ -1,20 +1,22 @@
 package ru.learn.collections;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Stack;
 
 public class StackDemo {
 
     public static void main(String[] args) {
-        Stack<Integer> stack = new Stack<>();
-        stack.peek();
+        Deque<Integer> deque = new ArrayDeque<>();
+//        deque.peek();
 
-        stack.push(1);
-        stack.push(2);
-        stack.push(3);
-        stack.push(4);
+        deque.push(1);
+        deque.push(2);
+        deque.push(3);
+        deque.push(4);
 
-        System.out.println(stack);
+        System.out.println(deque);
 
-        while (!stack.isEmpty()) System.out.println(stack.pop());
+        while (!deque.isEmpty()) System.out.println(deque.pop());
     }
 }
