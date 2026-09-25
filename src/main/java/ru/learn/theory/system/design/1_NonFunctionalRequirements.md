@@ -143,7 +143,7 @@ Tail latency почти никогда не появляется "просто �
 * p50 - "типичное"
 * p95 - "обычно плохо"
 * p99 - "хвост"
-* error rate
+* error rate 
 * RPS (нагрузка)
 * saturation (CPU, pool usage, DB connections, queue depth)
 
