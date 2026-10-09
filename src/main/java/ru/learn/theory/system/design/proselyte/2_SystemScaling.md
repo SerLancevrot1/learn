@@ -30,19 +30,54 @@
 
 **Пример**. Если для API задано "500 запросов в минуту на ключ", то после 500-го лимитер начнет блокировать (или ставить в очередь) последующие запросы этого клиента до конца окна.
 
+### API Gateway
 
+**API Gateway** - это программный пограничный слой, через который проходит внешний (и часто внутренний) трафик к бэкенд-API. Его задача - применять политики к запросам перед тем, как они попадут к микросервисам:
+- аутентификация/авторизация (OAuth2/OIDC/JWT, mTLS, RBAC/ABAC),
+- маршрутизация и версионирование API,
+- ограничение частоты (rate limiting), квоты, анти-DDoS,
+- трансформации (headers/body, REST↔gRPC/GraphQL), нормализация ошибок,w
+- кэширование и компрессия,
+- надёжность на уровне клиента: timeouts/retries/backoff/hedging/circuit-breaker,
+- наблюдаемость: трассировка, метрики RED, структурированные логи,
+- трафик-менеджмент: canary/blue-green, A/B, mirroring/shadowing.
 
+#### НФТ и SLO для API Gateway
+- Latency overhead (gateway-leg): p95 ≤ 5–10 мс (внешний трафик), p99 ≤ 15–20 мс; внутренняя зона - ещё жёстче.
+- Availability: ≥ 99.99% для внешнего контура; актив-актив по регионам.
+- Throughput: горизонтальная масштабируемость (линейный рост RPS на узел), zero-config-reload.
+- Security: mTLS внутрь, строгая валидация JWT (clock-skew, exp/nbf/aud, key-rotation), WAF-интеграция.
+- Multi-tenant: изоляция лимитов/квот/ключей, "просачивание" tenant-id в логи/трейсы.
+- Config & Ops: GitOps/динам. xDS, canary для правил, быстрый rollback; SLO-дашборды (RED).
 
+#### Типичные функции и порядок применения политик
+Рекомендуемый конвейер (edge path):
 
+1. TLS termination (H2/H3→H1.1 upstream при необходимости), HSTS, ALPN, SNI-routing.
 
+2. DDoS/бот-контроль (L7 rate, token-challenge, JA3/UA-fingerprints).
 
+3. Аутентификация: OAuth2/OIDC (JWT verify по JWKS локально), API-keys, mTLS.
 
+4. Авторизация: RBAC/ABAC, атрибуты в токене (scopes/roles/claims), PDP (OPA/Styra) при сложной политике.
 
+5. Rate limiting/Quotas: per-tenant/user/route; ответ `429` + `Retry-After`.
 
+6. Роутинг/версии: path/header/content-based, canary/weighted, гео-и device-based при нужде.
 
+7. Трансформации: sanitize/normalize, REST↔gRPC transcoding, JSON↔Protobuf, CORS.
 
+8. Надёжность: пер-роут timeouts, retry (идемпотентные), backoff+jitter, circuit-breaker, bulkhead.
 
+9. Кэш/компрессия: `Cache-Control`, ETag/If-None-Match, встроенный response-cache (для GET/idempotent).
 
+10. Наблюдаемость: `traceparent`/b3, `X-Request-ID`, бизнес-метки (tenant, plan, api\_key), логи со всеми атрибутами.
+
+###
+
+###
+
+###
 
 
 
