@@ -11,7 +11,7 @@
 | Happens-before, volatile, CAS, synchronized, deadlock, ConcurrentHashMap | [Многопоточность](Concurrent.md) |
 | Executor, очередь, CompletableFuture, Fork/Join, virtual threads, ThreadLocal | [Выполнение задач](AsyncJava.md) |
 | Bean, DI, proxy, self-invocation, propagation, rollback, Spring Boot | [Spring](Spring.md) |
-| SOLID, Strategy, Adapter, Decorator, Command, Factory, Observer, Singleton | [Паттерны проектирования](DesignPatterns.md) |
+| SOLID и 23 паттерна GoF с примерами на Java | [Паттерны проектирования](DesignPatterns.md) |
 | Два указателя, окно, бинарный поиск, дерево, граф, DP | [Алгоритмы](Algorithms.md) |
 
 ## Данные и эксплуатация

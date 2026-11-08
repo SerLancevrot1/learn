@@ -22,6 +22,7 @@ public class WeatherData implements Subject {
 
     @Override
     public void notifyObserver() {
+        // Издатель обращается к общему интерфейсу, поэтому новый экран добавляется через подписку.
         observers.forEach(Observer::update);
     }
 }

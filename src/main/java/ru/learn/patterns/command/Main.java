@@ -1,20 +1,23 @@
 package ru.learn.patterns.command;
 
+/**
+ * Command — позволяет пульту хранить действия для кнопок и выполнять их позже.
+ * Пульт вызывает Command.execute(), а привязанная команда обращается к нужному устройству.
+ */
 public class Main {
 
     public static void main(String[] args) {
 
         DistantController distantController = new DistantController(4);
-        //пульт управления умным домом
 
         LightInRoom lightInRoom = new LightInRoom();
         GarageDoor garageDoor = new GarageDoor();
         Curtains curtains = new Curtains();
 
-        // в лямбдах создаю анонимный класс. Если в интерфейсе больше одного абстрактного метода - нужно делать реализацию классов самому
-        distantController.setCommand(0, () -> lightInRoom.lightOn(), () -> lightInRoom.lightOff());
-        distantController.setCommand(1, () -> curtains.open(), () -> curtains.close());
-        distantController.setCommand(2, () -> garageDoor.open(), () -> garageDoor.close());
+        // Ссылка на метод реализует единственный абстрактный метод Command.execute().
+        distantController.setCommand(0, lightInRoom::lightOn, lightInRoom::lightOff);
+        distantController.setCommand(1, curtains::open, curtains::close);
+        distantController.setCommand(2, garageDoor::open, garageDoor::close);
 
         distantController.pressOnButton(0);
         distantController.pressOffButton(0);

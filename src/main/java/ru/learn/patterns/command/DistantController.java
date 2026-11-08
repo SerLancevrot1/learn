@@ -9,6 +9,7 @@ public class DistantController {
         commandsOn = new Command[size];
         commandsOff = new Command[size];
 
+        // Команда-заглушка позволяет вызывать execute() даже у ненастроенной кнопки.
         for (int i = 0; i < size; i++) {
             commandsOn[i] = new NoCommand();
             commandsOff[i] = new NoCommand();

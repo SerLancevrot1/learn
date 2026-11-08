@@ -1,5 +1,9 @@
 package ru.learn.patterns.decorator;
 
+/**
+ * Decorator — позволяет сочетать добавки к кофе через обёртки.
+ * Каждая обёртка сама является Coffee и дополняет стоимость и описание вложенного напитка.
+ */
 public class Main {
     public static void main(String[] args) {
         Coffee raf = new Raf();

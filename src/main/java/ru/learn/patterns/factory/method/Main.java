@@ -6,6 +6,10 @@ import ru.learn.patterns.factory.method.pizza.Pizza;
 import ru.learn.patterns.factory.method.store.LondonPizzaStore;
 import ru.learn.patterns.factory.method.store.MoscowPizzaStore;
 
+/**
+ * Factory Method — позволяет каждому магазину выбирать свой класс пиццы.
+ * Базовый PizzaStore задаёт процесс заказа и делегирует создание пиццы подклассу.
+ */
 public class Main {
     public static void main(String[] args) {
         MoscowPizzaStore moscowPizzaStore = new MoscowPizzaStore();

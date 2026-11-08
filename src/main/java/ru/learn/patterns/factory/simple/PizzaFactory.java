@@ -6,6 +6,7 @@ import ru.learn.patterns.factory.simple.pizza.Pizza;
 
 public class PizzaFactory {
 
+    // Здесь сосредоточено соответствие между кодами из меню и классами пиццы.
     public static Pizza getPizzaByCode(String code) {
         return switch (code) {
             case "pepperoni" -> new Pepperoni();

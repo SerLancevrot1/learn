@@ -5,6 +5,7 @@ public abstract class Duck {
     FlyBehaviour flyBehaviour;
     QuackBehaviour quackBehaviour;
 
+    // Утка делегирует полёт стратегии, выбранной конкретным подклассом.
     public void fly(){
         flyBehaviour.fly();
     }

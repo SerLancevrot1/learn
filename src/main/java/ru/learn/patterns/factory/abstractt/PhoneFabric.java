@@ -1,19 +1,20 @@
 package ru.learn.patterns.factory.abstractt;
 
-import ru.learn.patterns.factory.abstractt.glass.AppleGlass;
-import ru.learn.patterns.factory.abstractt.glass.SamsungGlass;
-import ru.learn.patterns.factory.abstractt.gpu.AppleGpu;
-import ru.learn.patterns.factory.abstractt.gpu.SamsungGpu;
-
 public class PhoneFabric {
 
     public Phone buildPhone(String type) {
-        if (type.equals("samsung")){
-            return Phone.builder().glass(new SamsungGlass()).gpu(new SamsungGpu()).build();
-        } else if (type.equals("apple")) {
-            return Phone.builder().glass(new AppleGlass()).gpu(new AppleGpu()).build();
-        } else {
-            return null;
-        }
+        return switch (type) {
+            case "samsung" -> assemble(new SamsungPartsFactory());
+            case "apple" -> assemble(new ApplePartsFactory());
+            default -> null;
+        };
+    }
+
+    // Оба компонента берутся из одной фабрики, чтобы сохранить согласованность семейства.
+    public Phone assemble(PhonePartsFactory parts) {
+        return Phone.builder()
+                .glass(parts.createGlass())
+                .gpu(parts.createGpu())
+                .build();
     }
 }

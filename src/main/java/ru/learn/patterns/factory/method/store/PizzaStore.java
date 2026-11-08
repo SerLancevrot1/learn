@@ -12,5 +12,6 @@ public abstract class PizzaStore {
         return pizza;
     }
 
+    // Подкласс выбирает продукт, а orderPizza() задаёт общую последовательность действий.
     protected abstract Pizza createPizza(String type);
 }
