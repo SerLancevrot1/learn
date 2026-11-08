@@ -27,7 +27,8 @@ public class KafkaListenerConfiguration {
                 new ConcurrentKafkaListenerContainerFactory<>();
         // Использует consumer-настройки Spring Boot из application.properties.
         factory.setConsumerFactory(consumerFactory);
-        // Запрещает автоматический commit: момент подтверждения задаёт код listener-а.
+        // Auto-commit выключен в application.properties. MANUAL требует явного ack,
+        // после которого контейнер фиксирует offset с семантикой обработки пачки poll().
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         return factory;
     }

@@ -1,6 +1,5 @@
 package ru.learn.kafka.transactions;
 
-import org.springframework.kafka.core.KafkaOperations;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +24,8 @@ public class AtomicOrderPublisher {
      */
     public void publish(String orderId, String orderPayload) {
         kafkaTemplate.executeInTransaction(operations -> {
-            // У отправок один ключ: Kafka помещает их в одну и ту же партицию
-            // каждого топика, а consumers могут связать записи по orderId.
+            // Одинаковый ключ связывает записи по orderId. Каждый топик выбирает
+            // партицию независимо. Атомарность обеспечивает транзакция, а не ключ.
             operations.send(TransactionTopics.ORDERS, orderId, orderPayload);
 
             // Это вторая запись той же транзакции. Между двумя send нет commit.

@@ -33,7 +33,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 // Поднимает встроенный Kafka broker и заранее создаёт тестовые топики.
 @EmbeddedKafka(partitions = 1, topics = {
         KafkaExactlyOnceIntegrationTest.INPUT_TOPIC,
-        KafkaExactlyOnceIntegrationTest.OUTPUT_TOPIC
+        KafkaExactlyOnceIntegrationTest.OUTPUT_TOPIC,
+        KafkaExactlyOnceIntegrationTest.STABLE_OFFSET_TOPIC
 })
 // Поднимает минимальный Spring context, необходимый для внедрения EmbeddedKafkaBroker.
 @SpringJUnitConfig(classes = KafkaExactlyOnceIntegrationTest.EmbeddedKafkaTestConfiguration.class)
@@ -44,6 +45,8 @@ class KafkaExactlyOnceIntegrationTest {
 
     // Топик для результата обработки.
     static final String OUTPUT_TOPIC = "exactly-once.output";
+
+    static final String STABLE_OFFSET_TOPIC = "exactly-once.stable-offset";
 
     // Spring Kafka test предоставляет адрес случайного локального брокера.
     @Autowired
@@ -133,6 +136,37 @@ class KafkaExactlyOnceIntegrationTest {
 
             // Проверяем, что offset группы зафиксирован вместе с выходным событием.
             assertEquals(1L, input.committed(inputPartition).offset());
+        }
+    }
+
+    @Test
+    void openTransactionDelaysVisibilityOfLaterNonTransactionalRecord() throws Exception {
+        var partition = new TopicPartition(STABLE_OFFSET_TOPIC, 0);
+        Properties transactional = producerProperties();
+        transactional.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, "lso-" + UUID.randomUUID());
+
+        try (var open = new KafkaProducer<String, String>(transactional);
+             var ordinary = new KafkaProducer<String, String>(producerProperties());
+             var committed = new KafkaConsumer<String, String>(consumerProperties("lso-committed", "read_committed"));
+             var uncommitted = new KafkaConsumer<String, String>(
+                     consumerProperties("lso-uncommitted", "read_uncommitted"))) {
+            open.initTransactions();
+            open.beginTransaction();
+            open.send(new ProducerRecord<>(STABLE_OFFSET_TOPIC, 0, "key", "pending"))
+                    .get(10, java.util.concurrent.TimeUnit.SECONDS);
+            ordinary.send(new ProducerRecord<>(STABLE_OFFSET_TOPIC, 0, "key", "later"))
+                    .get(10, java.util.concurrent.TimeUnit.SECONDS);
+
+            var partitions = Collections.singleton(partition);
+            // У read_committed endOffsets возвращает Last Stable Offset. Пока транзакция
+            // открыта, consumer не может переставить более позднюю запись перед ожидающей.
+            assertEquals(0L, committed.endOffsets(partitions).get(partition));
+            assertEquals(2L, uncommitted.endOffsets(partitions).get(partition));
+
+            open.abortTransaction();
+            committed.assign(partitions);
+            committed.seekToBeginning(partitions);
+            assertEquals("later", receiveOne(committed).value());
         }
     }
 

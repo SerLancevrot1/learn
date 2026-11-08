@@ -1,5 +1,7 @@
 # Брокеры сообщений: Kafka и RabbitMQ
 
+[Практикум Kafka](../kafka/README.md) · [Практикум RabbitMQ](../rabbitmq/README.md)
+
 [Карта конспектов](README.md)
 
 ## На интервью

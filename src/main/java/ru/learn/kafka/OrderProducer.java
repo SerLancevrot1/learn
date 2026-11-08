@@ -8,7 +8,7 @@ import java.util.concurrent.CompletableFuture;
 
 /**
  * Учебная обёртка над KafkaTemplate: показывает, как приложение публикует заказ
- * в Kafka и получает асинхронный результат отправки.
+ * в Kafka. send возвращает future отдельной отправки после завершения транзакции.
  */
 @Service
 public class OrderProducer {
@@ -23,11 +23,13 @@ public class OrderProducer {
 
     /**
      * Публикует заказ: orderId становится Kafka key, а payload — value.
-     * Одинаковые ключи попадут в одну партицию, что сохраняет порядок для этого заказа.
+     * При стандартной партиции по ключу и неизменном числе партиций записи заказа
+     * попадут в одну партицию. Порядок Kafka гарантирует в пределах партиции.
      */
     public CompletableFuture<SendResult<Object, Object>> send(String orderId, String payload) {
         // Создаёт отдельную Kafka-транзакцию для этой отправки и фиксирует её,
-        // если callback завершается успешно; при ошибке Spring отменит транзакцию.
+        // если callback завершается успешно. Вызов блокируется до завершения commit:
+        // future подтверждает отдельный send, а ошибка commit может прийти напрямую.
         return kafkaTemplate.executeInTransaction(
                 // Operations — KafkaTemplate, привязанный Spring к открытой транзакции.
                 operations -> operations.send(KafkaTopics.ORDERS, orderId, payload));
