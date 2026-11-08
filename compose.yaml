@@ -63,6 +63,44 @@ services:
       timeout: 5s
       retries: 15
 
+  mongo:
+    image: 'mongo:8.0'
+    profiles: ['labs']
+    command: ['mongod', '--replSet', 'lab-rs', '--bind_ip_all']
+    ports:
+      - '127.0.0.1:27017:27017'
+    volumes:
+      - 'mongo-lab:/data/db'
+    healthcheck:
+      # Адрес replica set совпадает с опубликованным портом для Java-клиента на хосте.
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - 'try { rs.status() } catch (e) { if (e.code !== 94) throw e; rs.initiate({_id:"lab-rs",members:[{_id:0,host:"localhost:27017"}]}) }; quit(db.hello().isWritablePrimary ? 0 : 1)'
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  lake-s3:
+    image: 'chrislusf/seaweedfs:4.52'
+    profiles: ['labs']
+    command: ['mini', '-dir=/data']
+    environment:
+      AWS_ACCESS_KEY_ID: learn
+      AWS_SECRET_ACCESS_KEY: learn-local-secret
+    ports:
+      - '127.0.0.1:8333:8333'
+    volumes:
+      - 'lake-lab:/data'
+    healthcheck:
+      test: ['CMD-SHELL', 'nc -z 127.0.0.1 8333']
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
 volumes:
   redis-lab:
   rabbitmq-lab:
+  mongo-lab:
+  lake-lab:

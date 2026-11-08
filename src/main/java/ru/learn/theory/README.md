@@ -23,7 +23,9 @@
 | ACID, MVCC, уровни изоляции, блокировки, write skew | [Транзакции в БД](DatabaseTransactions.md) |
 | Партиции, offset, ack, exactly-once, RabbitMQ, DLQ | [Брокеры сообщений](MessageBrockers.md) |
 | TTL, cache-aside, stampede, Redis Sentinel и Cluster | [Кеширование и Redis](RedisAndCaching.md) |
-| Запускаемые лабораторные Redis, Kafka и RabbitMQ | [Практикум](../../../../../../LABS.md) |
+| Запускаемые лабораторные Redis, Kafka, RabbitMQ, MongoDB и Data Lake | [Практикум](../../../../../../LABS.md) |
+| BSON, составной индекс, транзакции, репликация, шардирование и Change Streams | [MongoDB](MongoDB.md) · [Практикум](../mongo/README.md) |
+| Bronze/Silver/Gold, Parquet, поздние данные, снимки и Iceberg | [Data Lake и Lakehouse](DataLake.md) · [Практикум](../datalake/README.md) |
 | TLS, mTLS, сертификаты, handshake | [Безопасность](Security.md) |
 | Docker, Kubernetes, пробы, rollout, HPA | [DevOps](Devops.md) |
 | Prometheus, PromQL, кардинальность, логи, трассировки | [Observability](Observability.md) |
