@@ -4,6 +4,8 @@
 
 [Карта конспектов](README.md)
 
+[Kafka: гарантии доставки в тестах](#разбор-гарантий-доставки-kafka) · [Kafka: транзакции в тестах](#разбор-транзакций-kafka) · [RabbitMQ: разбор лабораторной](#разбор-доставки-rabbitmq)
+
 ## На интервью
 
 **На интервью.** Назови область порядка, момент фиксации offset, поведение при повторной доставке и границы транзакции. **Exactly-once при обработке Kafka → Kafka** связывает выходные записи и offset. Внешний эффект нужно защищать отдельно.
@@ -46,11 +48,14 @@
 5. [Consumer groups и offset](#5-consumer-groups-и-offset)
 6. [Порядок сообщений](#6-порядок-сообщений)
 7. [Гарантии доставки и транзакции](#7-гарантии-доставки-и-транзакции)
+   - [Разбор гарантий доставки Kafka](#разбор-гарантий-доставки-kafka)
+   - [Разбор транзакций Kafka](#разбор-транзакций-kafka)
 8. [Идемпотентный consumer и inbox](#8-идемпотентный-consumer-и-inbox)
 9. [Outbox и CDC](#9-outbox-и-cdc)
 10. [Обработка ошибок: retry, DLQ, fail-fast](#10-обработка-ошибок-retry-dlq-fail-fast)
 11. [Share groups: очереди в Kafka](#11-share-groups-очереди-в-kafka)
 12. [RabbitMQ](#12-rabbitmq)
+    - [Разбор доставки RabbitMQ](#разбор-доставки-rabbitmq)
 13. [Пропускная способность Kafka](#13-пропускная-способность-kafka)
 14. [Пробное собеседование](#14-пробное-собеседование)
 15. [Источники](#15-источники)
@@ -418,6 +423,47 @@ read_committed: [committed-A@0, committed-B@1]
 
 ---
 
+### Разбор гарантий доставки Kafka
+
+`[ ]` **Короткий ответ.** Если зафиксировать offset до обработки, сбой между commit и бизнес-операцией пропустит её. Если фиксировать после обработки, сбой в обратном окне приведёт к повтору. Для внешней БД обработчик может пережить повтор через inbox и изменение данных в одной транзакции БД.
+
+<details>
+<summary>Падение до и после commit offset</summary>
+
+В [OffsetCommitLab](../kafka/delivery/OffsetCommitLab.java) `poll()` продвигает локальную позицию сразу на всю полученную пачку. Код явно передаёт `record.offset() + 1` для конкретной партиции. На собеседовании нарисуй пачку с offsets 10, 11 и 12. Если обработаны 10 и 11, зафиксируй 12. Если готова только 11, подтверждать 12 ещё рано. Нужен непрерывный обработанный префикс по каждой партиции.
+
+| Сбой в тесте | Что видно после перезапуска с тем же group.id |
+|---|---|
+| Commit offset 1, затем падение до обработки записи 0 | Группа читает следующую запись. Начисление для записи 0 пропущено. |
+| Начисление 100, затем падение до commit offset | Группа снова читает запись 0. Без inbox баланс становится 200. |
+| Commit БД с inbox, затем падение до commit offset | Запись 0 приходит повторно. Отдельный `send` того же события даёт запись 1. [WalletLedger](../delivery/WalletLedger.java) пропускает обе попытки по event ID. Баланс остаётся 100, группа фиксирует offset 2. |
+
+Тесты назначают партицию явно и выключают auto-commit, чтобы изолировать окно сбоя. При ребалансе следующий владелец тоже опирается на зафиксированный offset группы. [KafkaConsumer API](https://kafka.apache.org/39/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html)
+
+</details>
+
+**Уточняющий вопрос.** Почему при `enable.idempotence=true` в журнале могут быть две записи с одним event ID? Producer дедуплицирует протокольные ретраи отправки. Два вызова `send` создают две записи. Для порядка обычно выбирают ключ агрегата, а для дедупликации хранят стабильный ID события.
+
+**Практика.** В [KafkaDeliveryIntegrationTest](../../../../../test/java/ru/learn/kafka/delivery/KafkaDeliveryIntegrationTest.java) остановись перед исключением в каждом опыте. Предскажи следующий offset и баланс, затем сравни с assertions. [Команда запуска](../kafka/README.md#2-гарантии-доставки)
+
+### Разбор транзакций Kafka
+
+`[ ]` **Короткий ответ.** Транзакция Kafka позволяет зафиксировать записи в нескольких партициях и, при Kafka → Kafka, сохранить вместе с ними offsets входной группы. При abort потребитель с `read_committed` пропускает отменённый результат. Вход можно обработать повторно, потому что его offset ещё не зафиксирован.
+
+<details>
+<summary>Что фиксируется в Java API и Spring Kafka</summary>
+
+1. [AtomicOrderPublisher](../kafka/transactions/AtomicOrderPublisher.java) через `KafkaTemplate.executeInTransaction` отправляет заказ и аудит в два топика. [Тест публикации](../../../../../test/java/ru/learn/kafka/transactions/AtomicOrderPublisherIntegrationTest.java) проверяет видимость обеих записей после commit и отмену при исключении. У читателей по-прежнему независимые вызовы `poll()`.
+2. [KafkaExactlyOnceIntegrationTest](../../../../../test/java/ru/learn/kafka/KafkaExactlyOnceIntegrationTest.java) показывает низкоуровневый путь. Первая попытка успевает отправить выход и делает `abortTransaction()`. Её выход виден в `read_uncommitted`. Тест возвращает входной consumer к исходной записи, а во второй транзакции передаёт `offset + 1` и метаданные группы в `sendOffsetsToTransaction`. После `commitTransaction()` видно один зафиксированный результат и committed offset 1.
+3. [SpringKafkaTransactionIntegrationTest](../../../../../test/java/ru/learn/kafka/transactions/SpringKafkaTransactionIntegrationTest.java) бросает исключение после `send().join()`. Контейнер откатывает транзакцию и возвращается к входной записи. Тест проверяет два вызова обработчика, только `attempt-2:created` в `read_committed` и committed offset 1.
+4. В опыте с Last Stable Offset открытая транзакция в начале партиции задерживает чтение даже более поздней нетранзакционной записи из той же партиции. После abort читатель с `read_committed` пропускает первую запись и получает `later`. [KafkaConsumer API](https://kafka.apache.org/39/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html)
+
+</details>
+
+**Уточняющий вопрос.** Что будет, если после записи в SQL-БД Kafka-транзакция отменится? SQL commit уже состоялся, а входная запись может прийти снова. Для БД используй границу [inbox](#8-идемпотентный-consumer-и-inbox). Для направления БД → брокер разбери [outbox](#9-outbox-и-cdc).
+
+**Практика.** В тесте с Java API проследи за `send().get()`, abort и финальным commit. Объясни, почему успешная отправка и видимость для `read_committed` наступают в разные моменты. Затем представь успешный commit выхода без `sendOffsetsToTransaction` и предскажи, что прочитает группа после перезапуска. [Команда запуска](../kafka/README.md#3-транзакции)
+
 ## 8. Идемпотентный consumer и inbox
 
 `[ ]` **Короткий ответ:** consumer идемпотентен, если повторная обработка того же события не меняет итоговый результат. При at-least-once дубликаты неизбежны: rebalance после обработки до commit, ретраи producer после перезапуска, повторная публикация из outbox или DLQ. Способы: уникальный id события и таблица обработанных (inbox), уникальное ограничение в БД, естественно идемпотентные операции (`SET status = 'PAID'` вместо `balance = balance + 100`), версия агрегата.
@@ -586,6 +632,24 @@ accepted: 12
 - Что будет, если consumers нет, а сообщения идут? Очередь растёт, расходует память и диск; срабатывают memory/disk alarms, и брокер блокирует publishers. Нужны лимиты длины очереди и мониторинг.
 
 ---
+
+### Разбор доставки RabbitMQ
+
+`[ ]` **Короткий ответ.** Publisher confirm сообщает исход публикации со стороны брокера. При `mandatory=true` отдельно проверяю `basic.return`, чтобы обнаружить отсутствие маршрута. Потребитель отправляет свой ack после commit бизнес-операции. Обрыв до ack может вернуть доставку в очередь, поэтому для начисления нужен стабильный event ID.
+
+<details>
+<summary>От routing key до повторной доставки и DLQ</summary>
+
+1. [WalletTopology](../rabbitmq/WalletTopology.java) связывает direct exchange с тремя очередями. `wallet.credit` ведёт в рабочую очередь, `wallet.retry` в очередь ожидания, `wallet.dead` в DLQ. В [ConfirmedPublisher](../rabbitmq/ConfirmedPublisher.java) один канал и одна публикация в полёте позволяют сопоставить return с сообщением. Ключ `typo` даёт `NO_ROUTE` даже при положительном confirm. При таймауте исход неизвестен, поэтому повтор сохраняет исходный message ID. [Подтверждения RabbitMQ](https://www.rabbitmq.com/docs/confirms)
+2. [WalletWorker](../rabbitmq/WalletWorker.java) вызывает `basicAck` после возврата обработчика. В тесте commit кошелька уже прошёл, но канал закрывается до ack. На новом канале брокер доставляет событие повторно, а inbox сохраняет одно начисление. Ack использует delivery tag текущего канала, дедупликация использует message ID.
+3. При временной ошибке worker публикует копию с увеличенным `lab-attempt` и подтверждает исходную доставку после успешной публикации. TTL в retry-очереди запускает перенос обратно в рабочую очередь через DLX. Некорректный payload или исчерпание попыток приводят к `basicReject(tag, false)`, который в этой топологии направляет сообщение в DLQ. При отсутствии binding для retry исходная доставка остаётся unacked. В учебных classic queues перенос через DLX сам по себе может потерять сообщение при недоступной цели. [Dead-lettering RabbitMQ](https://www.rabbitmq.com/docs/dlx)
+4. Тест prefetch использует подписку `basic.consume`. При `basicQos(1)` брокер ждёт первого ack перед второй доставкой этому подписчику. Остальные опыты используют `basic.get`, чтобы точно остановиться между получением и ack. [Prefetch и подтверждения](https://www.rabbitmq.com/docs/confirms)
+
+</details>
+
+**Уточняющий вопрос.** Что останется, если связь оборвётся после confirm копии для retry, но до ack оригинала? Возможны две цепочки обработки: оригинал вернётся в рабочую очередь, а копия вернётся туда позже по TTL. Счётчик попыток ограничивает одну цепочку. Общий event ID позволяет inbox защитить баланс от обеих.
+
+**Практика.** В [RabbitMqLabIntegrationTest](../../../../../test/java/ru/learn/rabbitmq/RabbitMqLabIntegrationTest.java) начни с `mandatoryReturnDetectsUnroutableMessageDespiteConfirm`. Затем в тесте закрытия канала проследи `Unacked → Ready → redelivered` и проверь баланс после нового ack. [Команды запуска и Management UI](../rabbitmq/README.md)
 
 ## 13. Пропускная способность Kafka
 

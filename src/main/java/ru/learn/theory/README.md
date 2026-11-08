@@ -22,7 +22,10 @@
 | B-tree, составной индекс, EXPLAIN, N+1, выбор хранилища | [Индексы и запросы](DatabasePerformance.md) |
 | ACID, MVCC, уровни изоляции, блокировки, write skew | [Транзакции в БД](DatabaseTransactions.md) |
 | Партиции, offset, ack, exactly-once, RabbitMQ, DLQ | [Брокеры сообщений](MessageBrockers.md) |
-| TTL, cache-aside, stampede, Redis Sentinel и Cluster | [Кеширование и Redis](RedisAndCaching.md) |
+| Падение до и после commit offset, повтор и inbox | [Kafka · гарантии доставки](MessageBrockers.md#разбор-гарантий-доставки-kafka) |
+| Abort, read_committed, Last Stable Offset, Spring Kafka | [Kafka · транзакции](MessageBrockers.md#разбор-транзакций-kafka) |
+| Publisher confirm, mandatory return, prefetch, retry и DLQ | [RabbitMQ · разбор доставки](MessageBrockers.md#разбор-доставки-rabbitmq) |
+| TTL, cache-aside, stampede, Redis Sentinel и Cluster | [Кеширование и Redis](RedisAndCaching.md) · [Разбор лабораторной](RedisAndCaching.md#разбор-лабораторной-redis) |
 | Запускаемые лабораторные Redis, Kafka, RabbitMQ, MongoDB и Data Lake | [Практикум](../../../../../../LABS.md) |
 | BSON, составной индекс, транзакции, репликация, шардирование и Change Streams | [MongoDB](MongoDB.md) · [Практикум](../mongo/README.md) |
 | Bronze/Silver/Gold, Parquet, поздние данные, снимки и Iceberg | [Data Lake и Lakehouse](DataLake.md) · [Практикум](../datalake/README.md) |
