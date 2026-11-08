@@ -1,5 +1,17 @@
 # Брокеры сообщений: Kafka и RabbitMQ
 
+[Карта конспектов](README.md)
+
+## На интервью
+
+**На интервью.** Назови область порядка, момент фиксации offset, поведение при повторной доставке и границы транзакции. **Exactly-once при обработке Kafka → Kafka** связывает выходные записи и offset. Внешний эффект нужно защищать отдельно.
+
+**Код.** [Два listener с разными группами](../kafka/OrderListeners.java) · [Транзакционная публикация в два топика](../kafka/transactions/AtomicOrderPublisher.java) · [Тест abort и повторной обработки](../../../../../test/java/ru/learn/kafka/KafkaExactlyOnceIntegrationTest.java) · [Тест commit и rollback](../../../../../test/java/ru/learn/kafka/transactions/AtomicOrderPublisherIntegrationTest.java).
+
+**Что проверить в тесте.** Предскажи, что увидят `read_committed` и `read_uncommitted` после abort. Найди проверку offset после commit. Затем объясни, что изменится при записи результата в отдельную БД.
+
+**Запуск тестов из корня.** `.\mvnw.cmd '-Dtest=KafkaExactlyOnceIntegrationTest,AtomicOrderPublisherIntegrationTest' test`. Тесты поднимают Embedded Kafka. Для запуска приложения см. [инструкцию](../kafka/README.md). [Границы гарантий в документации Kafka](https://kafka.apache.org/34/design/design/)
+
 > Конспект-тренажёр для подготовки к собеседованиям.
 > Примеры Kafka проверены на **Apache Kafka 4.4.0** (KRaft, один брокер) и **OpenJDK 25**: порядок по ключу, consumer lag, значения по умолчанию producer и consumer, транзакции с `read_committed`, share groups. Вывод в разделах — реальный. RabbitMQ в среде проверки не было: его примеры приведены по документации и не запускались. Факты о версиях — по официальной документации, ссылки внутри.
 

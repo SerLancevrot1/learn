@@ -1,5 +1,11 @@
 # Кеширование и Redis
 
+[Оглавление](README.md)
+
+## На интервью
+
+**Для cache-aside объясни путь при промахе, TTL и гонку инвалидации.** Для Redis отдели репликацию и failover от распределения ключей. [Кейс Rate Limiter](system/design/example/RateLimiter.md) · [Кейс коротких ссылок](system/design/example/ShortUrl.md).
+
 > Конспект-тренажёр для подготовки к собеседованиям.
 > Команды Redis проверены на **Redis 8.0.5** (`redis-cli`), включая один узел в режиме cluster для hash slots; демонстрация cache stampede — на Python 3 с клиентом `redis-py 8.1.0`. Вывод в разделах реальный. Команды Redis 8.4+ (`DELEX`, `SET ... IFEQ`) на доступной версии не запускались — они приведены по документации и помечены. Sentinel, многоузловой Cluster и Spring Cache не запускались.
 

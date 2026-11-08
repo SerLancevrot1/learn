@@ -1,5 +1,13 @@
 # Spring Framework: контейнер, proxy и транзакции
 
+[Оглавление](README.md)
+
+## На интервью
+
+**Проведи вызов через proxy.** Объясни, когда откроется транзакция, какой ресурс в ней участвует, когда будет rollback и как повлияет self-invocation.
+
+**Практика.** Сравни две фабрики listener в [KafkaListenerConfiguration](../kafka/KafkaListenerConfiguration.java). Это пример менеджера транзакций Kafka. Изоляцию транзакций БД разбери [на опытах с двумя сессиями](DatabaseTransactions.md#65-лабораторные-две-сессии).
+
 > Конспект-тренажёр для подготовки к собеседованиям.
 > Примеры проверены на **Spring Framework 7.0.10**, **OpenJDK 25** и H2 2.5 (без Spring Boot, чистый `AnnotationConfigApplicationContext`): жизненный цикл bean, CGLIB-proxy, self-invocation, правила rollback, propagation, `readOnly`, `@Async`, scope prototype, `@Retryable` и `@ConcurrencyLimit`. Вывод в разделах реальный, полный код — в [приложении](#приложение-код-лабораторных). Конфигурация Spring Boot не запускалась и помечена.
 

@@ -1,5 +1,7 @@
 ## Проектирование key-value-хранилища
 
+[Кейсы system design](../../../README.md#кейсы-system-design) · [Выбор хранилища](../../../DatabasePerformance.md#9-выбор-хранилища) · [Репликация и шардирование](../DistributedData.md)
+
 ### Требования и модель данных
 
 Уточните операции (`get`, `put`, `delete`, range scan), размер/рост данных, read/write ratio, latency, durability, replication, консистентность, TTL, размер значения и модель отказов. Простое key-value API не означает отсутствие транзакций, индексов или схемы; это выбранная граница интерфейса.
