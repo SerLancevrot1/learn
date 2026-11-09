@@ -31,7 +31,8 @@
 | Запускаемые лабораторные Redis, Kafka, RabbitMQ, MongoDB и Data Lake | [Практикум](../../../../../../LABS.md) |
 | BSON, составной индекс, транзакции, репликация, шардирование и Change Streams | [MongoDB](MongoDB.md) · [Практикум](../mongo/README.md) |
 | Bronze/Silver/Gold, Parquet, поздние данные, снимки и Iceberg | [Data Lake и Lakehouse](DataLake.md) · [Практикум](../datalake/README.md) |
-| TLS, mTLS, сертификаты, handshake | [Безопасность](Security.md) |
+| TLS, mTLS, сертификаты, handshake | [Безопасность транспорта](Security.md) |
+| Spring Security, OAuth 2.0, JWT, доступ к объектам, CSRF, CORS и OWASP | [Прикладная безопасность](ApplicationSecurity.md) |
 | Docker, Kubernetes, пробы, rollout, HPA | [DevOps](Devops.md) |
 | Prometheus, PromQL, кардинальность, логи, трассировки | [Observability](Observability.md) |
 

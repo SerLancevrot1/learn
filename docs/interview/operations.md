@@ -84,6 +84,8 @@ DNS находит адрес сервера по имени. Затем кли�
 
 ## Безопасность
 
+[Прикладная безопасность и Spring Security](../../src/main/java/ru/learn/theory/ApplicationSecurity.md) · [Вопросы на примере API кошелька](../../src/main/java/ru/learn/theory/ApplicationSecurity.md#7-вопросы-для-собеседования)
+
 ### 09. Чем аутентификация отличается от авторизации?
 
 <details>
