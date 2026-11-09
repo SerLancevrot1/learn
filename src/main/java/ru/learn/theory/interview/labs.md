@@ -1,6 +1,6 @@
 # Практикум для собеседований
 
-[Маршрут](../../INTERVIEW.md) · [Практикум по внешним сервисам](../../LABS.md)
+[Маршрут](../../../../../../../INTERVIEW.md) · [Практикум по внешним сервисам](../../../../../../../LABS.md)
 
 Для Maven-команд нужен JDK 17 или новее. Если Wrapper не находит Java, укажи путь к установленному JDK в `JAVA_HOME` текущего терминала. Команды рассчитаны на PowerShell и выполняются из корня репозитория. В Bash используй `./mvnw`.
 
@@ -12,7 +12,7 @@
 .\mvnw.cmd "-Dtest=ProxyTransactionLabTest" test
 ```
 
-Открой [ProxyTransactionLabTest](../../src/test/java/ru/learn/interview/ProxyTransactionLabTest.java). Поставь breakpoint в `insertThenFail` и проверь `TransactionSynchronizationManager.isActualTransactionActive()`. Измени вызов в учебном примере так, чтобы он проходил через прокси, и предскажи, какое утверждение теста станет неверным.
+Открой [ProxyTransactionLabTest](../../../../../../test/java/ru/learn/interview/ProxyTransactionLabTest.java). Поставь breakpoint в `insertThenFail` и проверь `TransactionSynchronizationManager.isActualTransactionActive()`. Измени вызов в учебном примере так, чтобы он проходил через прокси, и предскажи, какое утверждение теста станет неверным.
 
 <details>
 <summary>Подсказка</summary>
@@ -28,7 +28,7 @@
 
 Если в том же bean уже есть активная внешняя транзакция, self-invocation всё равно обходит перехватчик, а JDBC-операции могут участвовать в текущей транзакции. Это полезное уточнение на собеседовании.
 
-[Конспект](../../src/main/java/ru/learn/theory/Spring.md#42-self-invocation) · [Документация Spring](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html)
+[Конспект](../Spring.md#42-self-invocation) · [Документация Spring](https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html)
 
 </details>
 
@@ -76,7 +76,7 @@ Remove-Item Env:LAB_POSTGRES_URL
 
 После первой последовательности останется 120, потому что приложение рассчитало абсолютные значения на старом снимке. Во второй последовательности UPDATE использует актуальную версию строки и сохраняет оба приращения, получается 130. Для условного решения на основе прочитанного значения пригодятся версия, `SELECT ... FOR UPDATE` или другая граница изоляции. При ошибке сериализации повторяй всю транзакцию с новым чтением данных.
 
-[Автоматическая проверка](../../src/test/java/ru/learn/interview/PostgresConcurrencyLabTest.java) · [Другие опыты в двух сессиях](../../src/main/java/ru/learn/theory/DatabaseTransactions.md#65-лабораторные-две-сессии) · [Документация PostgreSQL](https://www.postgresql.org/docs/current/transaction-iso.html)
+[Автоматическая проверка](../../../../../../test/java/ru/learn/interview/PostgresConcurrencyLabTest.java) · [Другие опыты в двух сессиях](../DatabaseTransactions.md#65-лабораторные-две-сессии) · [Документация PostgreSQL](https://www.postgresql.org/docs/current/transaction-iso.html)
 
 </details>
 
@@ -88,7 +88,7 @@ Remove-Item Env:LAB_POSTGRES_URL
 .\mvnw.cmd "-Dtest=WalletOutboxTest,WalletLedgerTest,KafkaDeliveryIntegrationTest" test
 ```
 
-Используются Embedded Kafka и две независимые H2-базы в режиме PostgreSQL. Исходная БД хранит заявку и строку Outbox. БД получателя хранит кошелёк и Inbox. HTTP-контракт из [пробного system design](../../INTERVIEW.md#6-system-design-и-рассказ-о-проекте--40-минут) — задание для обсуждения. В исполняемой лабораторной роль клиента выполняет тест.
+Используются Embedded Kafka и две независимые H2-базы в режиме PostgreSQL. Исходная БД хранит заявку и строку Outbox. БД получателя хранит кошелёк и Inbox. HTTP-контракт из [пробного system design](../../../../../../../INTERVIEW.md#6-system-design-и-рассказ-о-проекте--40-минут) — задание для обсуждения. В исполняемой лабораторной роль клиента выполняет тест.
 
 | Когда произошёл сбой | Что предсказать |
 | --- | --- |
@@ -114,7 +114,7 @@ Remove-Item Env:LAB_POSTGRES_URL
 
 `FOR UPDATE SKIP LOCKED` позволяет конкурирующим relay не брать уже захваченную строку. Учебная реализация держит транзакцию и соединение на время ожидания ACK. При росте нагрузки обсуди короткий claim с lease и повторным захватом, ограничение попыток, возраст старейшей заявки и требования к порядку. Стабильный ключ партиции помогает упорядочивать записи одного кошелька, а конкуренция relay и повторы требуют отдельной гарантии порядка бизнес-событий.
 
-[WalletOutbox](../../src/main/java/ru/learn/delivery/WalletOutbox.java) · [Сценарии отправителя](../../src/test/java/ru/learn/delivery/WalletOutboxTest.java) · [Сценарии потребителя](../../src/test/java/ru/learn/kafka/delivery/KafkaDeliveryIntegrationTest.java) · [Гарантии Kafka](https://kafka.apache.org/32/design/design/#message-delivery-semantics)
+[WalletOutbox](../../delivery/WalletOutbox.java) · [Сценарии отправителя](../../../../../../test/java/ru/learn/delivery/WalletOutboxTest.java) · [Сценарии потребителя](../../../../../../test/java/ru/learn/kafka/delivery/KafkaDeliveryIntegrationTest.java) · [Гарантии Kafka](https://kafka.apache.org/32/design/design/#message-delivery-semantics)
 
 </details>
 

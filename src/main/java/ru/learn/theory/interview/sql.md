@@ -1,10 +1,10 @@
 # SQL, PostgreSQL и работа с данными
 
-[Вернуться к маршруту](../../INTERVIEW.md)
+[Вернуться к маршруту](../../../../../../../INTERVIEW.md)
 
 Дополнительные вопросы · [Запросы, планы и конкуренция](advanced/postgres.md)
 
-Подробности в [SQL](../../src/main/java/ru/learn/theory/DataBases.md), [индексах](../../src/main/java/ru/learn/theory/DatabasePerformance.md) и [транзакциях](../../src/main/java/ru/learn/theory/DatabaseTransactions.md). Практика в [двух сессиях PostgreSQL](labs.md#postgresql-потерянное-обновление).
+Подробности в [SQL](../DataBases.md), [индексах](../DatabasePerformance.md) и [транзакциях](../DatabaseTransactions.md). Практика в [двух сессиях PostgreSQL](labs.md#postgresql-потерянное-обновление).
 
 Сначала ответь вслух. Раскрой разбор и повтори ответ на новом примере.
 

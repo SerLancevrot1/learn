@@ -1,10 +1,10 @@
 # Многопоточность и алгоритмы
 
-[Вернуться к маршруту](../../INTERVIEW.md)
+[Вернуться к маршруту](../../../../../../../INTERVIEW.md)
 
 Дополнительные вопросы · [Многопоточность](advanced/concurrency.md) · [Алгоритмы](advanced/algorithms.md)
 
-Подробности в [модели памяти](../../src/main/java/ru/learn/theory/Concurrent.md), [асинхронном Java](../../src/main/java/ru/learn/theory/AsyncJava.md), [разборах алгоритмов](../../src/main/java/ru/learn/theory/Algorithms.md) и [решениях](../../src/main/java/ru/learn/leet/code).
+Подробности в [модели памяти](../Concurrent.md), [асинхронном Java](../AsyncJava.md), [разборах алгоритмов](../Algorithms.md) и [решениях](../../leet/code).
 
 Сначала ответь вслух. Раскрой разбор и повтори ответ на новом примере.
 

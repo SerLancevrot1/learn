@@ -1,10 +1,10 @@
 # Spring, JPA и тестирование
 
-[Вернуться к маршруту](../../INTERVIEW.md)
+[Вернуться к маршруту](../../../../../../../INTERVIEW.md)
 
 Дополнительные вопросы · [Spring и HTTP](advanced/spring.md) · [JPA, тестирование и сборка](advanced/persistence-testing.md)
 
-Подробности в [Spring](../../src/main/java/ru/learn/theory/Spring.md) и [ORM](../../src/main/java/ru/learn/theory/DatabasePerformance.md#8-orm-и-проблема-n1). Практика в [лабораторной](labs.md#spring-прокси-и-откат).
+Подробности в [Spring](../Spring.md) и [ORM](../DatabasePerformance.md#8-orm-и-проблема-n1). Практика в [лабораторной](labs.md#spring-прокси-и-откат).
 
 Сначала ответь вслух. Раскрой разбор и повтори ответ на новом примере.
 

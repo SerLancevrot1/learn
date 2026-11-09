@@ -1,10 +1,10 @@
 # MongoDB, Data Lake и выбор хранилища
 
-[Вернуться к маршруту](../../INTERVIEW.md)
+[Вернуться к маршруту](../../../../../../../INTERVIEW.md)
 
 Дополнительные вопросы · [Redis, MongoDB и Data Lake](advanced/storage.md)
 
-Подробности в [MongoDB](../../src/main/java/ru/learn/theory/MongoDB.md) и [Data Lake](../../src/main/java/ru/learn/theory/DataLake.md). Есть [практика MongoDB](../../src/main/java/ru/learn/mongo/README.md) и [практика Data Lake](../../src/main/java/ru/learn/datalake/README.md).
+Подробности в [MongoDB](../MongoDB.md) и [Data Lake](../DataLake.md). Есть [практика MongoDB](../../mongo/README.md) и [практика Data Lake](../../datalake/README.md).
 
 Сначала ответь вслух. Раскрой разбор и повтори ответ на новом примере.
 

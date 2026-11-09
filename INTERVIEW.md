@@ -2,23 +2,23 @@
 
 Открой сессию, поставь таймер и отвечай вслух. Для теории за 60–90 секунд назови механизм, приведи пример и обозначь границу гарантии. Для задачи сначала проговори ожидаемый результат, затем запусти проверку.
 
-[Конспекты](src/main/java/ru/learn/theory/README.md) · [Практикум собеседований](docs/interview/labs.md) · [Лабораторные по инфраструктуре](LABS.md)
+[Конспекты](src/main/java/ru/learn/theory/README.md) · [Практикум собеседований](src/main/java/ru/learn/theory/interview/labs.md) · [Лабораторные по инфраструктуре](LABS.md)
 
 ## Банк вопросов
 
-Всего **752 вопроса с ответами**. Ниже — 230 базовых. Ещё **522** разбиты на 13 блоков с задачами на чтение кода, диагностику и проектирование. [Дополнительные вопросы](docs/interview/advanced/README.md)
+Всего **752 вопроса с ответами**. Ниже — 230 базовых. Ещё **522** разбиты на 13 блоков с задачами на чтение кода, диагностику и проектирование. [Дополнительные вопросы](src/main/java/ru/learn/theory/interview/advanced/README.md)
 
 | Тема | Вопросов | Что отработать |
 | --- | ---: | --- |
-| [Java Core и JVM](docs/interview/java.md) | 26 | Контракты типов, generics, коллекции, Stream API, память, GC и диагностика |
-| [Многопоточность и алгоритмы](docs/interview/concurrency-algorithms.md) | 25 | Happens-before, атомарность, executors, futures, виртуальные потоки, сложность и инварианты |
-| [Spring, JPA и тестирование](docs/interview/spring.md) | 24 | Контейнер, proxy, транзакции, ORM, JUnit и границы тестов |
-| [SQL и PostgreSQL](docs/interview/sql.md) | 23 | JOIN, NULL, оконные функции, индексы, MVCC и конкурентные изменения |
-| [Kafka, RabbitMQ и Redis](docs/interview/messaging.md) | 27 | Offset, ack, порядок, retry, TTL, Outbox, Inbox и CDC |
-| [MongoDB и Data Lake](docs/interview/data.md) | 17 | Модель документов, индексы, change streams, Parquet, снимки и backfill |
-| [HTTP, безопасность и эксплуатация](docs/interview/operations.md) | 34 | REST, TLS, OAuth, Docker, Kubernetes, Git, Maven, CI и диагностика |
-| [Архитектура и system design](docs/interview/design.md) | 28 | Масштаб, отказоустойчивость, распределённые данные и обсуждение опыта |
-| [SOLID и паттерны проектирования](docs/interview/patterns.md) | 26 | Все 23 паттерна GoF, примеры применения и цена абстракций |
+| [Java Core и JVM](src/main/java/ru/learn/theory/interview/java.md) | 26 | Контракты типов, generics, коллекции, Stream API, память, GC и диагностика |
+| [Многопоточность и алгоритмы](src/main/java/ru/learn/theory/interview/concurrency-algorithms.md) | 25 | Happens-before, атомарность, executors, futures, виртуальные потоки, сложность и инварианты |
+| [Spring, JPA и тестирование](src/main/java/ru/learn/theory/interview/spring.md) | 24 | Контейнер, proxy, транзакции, ORM, JUnit и границы тестов |
+| [SQL и PostgreSQL](src/main/java/ru/learn/theory/interview/sql.md) | 23 | JOIN, NULL, оконные функции, индексы, MVCC и конкурентные изменения |
+| [Kafka, RabbitMQ и Redis](src/main/java/ru/learn/theory/interview/messaging.md) | 27 | Offset, ack, порядок, retry, TTL, Outbox, Inbox и CDC |
+| [MongoDB и Data Lake](src/main/java/ru/learn/theory/interview/data.md) | 17 | Модель документов, индексы, change streams, Parquet, снимки и backfill |
+| [HTTP, безопасность и эксплуатация](src/main/java/ru/learn/theory/interview/operations.md) | 34 | REST, TLS, OAuth, Docker, Kubernetes, Git, Maven, CI и диагностика |
+| [Архитектура и system design](src/main/java/ru/learn/theory/interview/design.md) | 28 | Масштаб, отказоустойчивость, распределённые данные и обсуждение опыта |
+| [SOLID и паттерны проектирования](src/main/java/ru/learn/theory/interview/patterns.md) | 26 | Все 23 паттерна GoF, примеры применения и цена абстракций |
 
 ## Как работать с ответами
 
@@ -70,7 +70,7 @@
 
 **Память.** Если после уборки память возвращается к одному уровню, возможно, временных объектов просто много. Если занятый объём после уборки продолжает расти при той же нагрузке, выясни, кто удерживает старые объекты.
 
-[Java Core и JVM](docs/interview/java.md) · [Многопоточность](docs/interview/concurrency-algorithms.md)
+[Java Core и JVM](src/main/java/ru/learn/theory/interview/java.md) · [Многопоточность](src/main/java/ru/learn/theory/interview/concurrency-algorithms.md)
 
 </details>
 
@@ -96,7 +96,7 @@
 
 **JPA.** Один запрос загрузил 10 заказов, а затем каждый отдельно загрузил товары. Это 11 запросов. Проверь число запросов по SQL-логу. Для постраничной выдачи можно сначала выбрать ID заказов страницы, потом загрузить их товары.
 
-[Spring и PostgreSQL на практике](docs/interview/labs.md) · [SQL и транзакции](docs/interview/sql.md)
+[Spring и PostgreSQL на практике](src/main/java/ru/learn/theory/interview/labs.md) · [SQL и транзакции](src/main/java/ru/learn/theory/interview/sql.md)
 
 </details>
 
@@ -122,7 +122,7 @@
 
 **Повтор запроса и кеш.** Если под одним ID сначала пришло 100, а потом 200, API вернёт конфликт. Сравни сумму с первой заявкой и не меняй её. TTL задаёт срок жизни ключа, а вытеснение может удалить его раньше, чтобы освободить память.
 
-[Лабораторная по кошельку](docs/interview/labs.md#кошелёк-outbox-kafka-и-inbox) · [Брокеры и Redis](docs/interview/messaging.md)
+[Лабораторная по кошельку](src/main/java/ru/learn/theory/interview/labs.md#кошелёк-outbox-kafka-и-inbox) · [Брокеры и Redis](src/main/java/ru/learn/theory/interview/messaging.md)
 
 </details>
 
@@ -146,7 +146,7 @@
 
 **SQL.** Оставь только успешные заказы и пронумеруй их отдельно для каждого клиента, начиная с самого свежего. Добавь к сортировке ID на случай одинаковой даты. Затем соедини клиентов с заказом номер 1 через `LEFT JOIN`. Условие `rn = 1` поставь в `ON`, чтобы клиент без заказа не исчез.
 
-[Решение на Java](src/main/java/ru/learn/leet/code/easy/LongestSubstringWithoutRepeatingCharacters.java) · [SQL](docs/interview/sql.md)
+[Решение на Java](src/main/java/ru/learn/leet/code/easy/LongestSubstringWithoutRepeatingCharacters.java) · [SQL](src/main/java/ru/learn/theory/interview/sql.md)
 
 </details>
 
@@ -172,7 +172,7 @@
 
 **Отчёт.** Если вчерашние продажи пришли сегодня, пересчитай вчера. Сначала собери и проверь новые файлы, потом переключи указатель на готовый набор. Старые файлы сохраняй, пока ими пользуются начатые запросы.
 
-[Эксплуатация](docs/interview/operations.md) · [MongoDB и Data Lake](docs/interview/data.md)
+[Эксплуатация](src/main/java/ru/learn/theory/interview/operations.md) · [MongoDB и Data Lake](src/main/java/ru/learn/theory/interview/data.md)
 
 </details>
 
@@ -199,7 +199,7 @@
 
 **Выкладка и рассказ.** Сначала обнови читателей, чтобы они понимали оба формата, потом обнови отправителей. На собеседовании опиши тест своими словами: «Я остановил отправителя после подтверждения Kafka. После повтора в Kafka было две записи, а в БД деньги добавились один раз».
 
-[Кейсы system design](docs/interview/design.md) · [Лабораторная](docs/interview/labs.md#кошелёк-outbox-kafka-и-inbox)
+[Кейсы system design](src/main/java/ru/learn/theory/interview/design.md) · [Лабораторная](src/main/java/ru/learn/theory/interview/labs.md#кошелёк-outbox-kafka-и-inbox)
 
 </details>
 

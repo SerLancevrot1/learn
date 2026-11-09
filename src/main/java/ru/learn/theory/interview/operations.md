@@ -1,10 +1,10 @@
 # HTTP, безопасность, DevOps и наблюдаемость
 
-[Вернуться к маршруту](../../INTERVIEW.md)
+[Вернуться к маршруту](../../../../../../../INTERVIEW.md)
 
 Дополнительные вопросы · [Разбор инцидентов](advanced/operations.md) · [Тестирование и сборка](advanced/persistence-testing.md)
 
-Подробности в [безопасности](../../src/main/java/ru/learn/theory/Security.md), [DevOps](../../src/main/java/ru/learn/theory/Devops.md), [наблюдаемости](../../src/main/java/ru/learn/theory/Observability.md) и [масштабировании API](../../src/main/java/ru/learn/theory/system/design/proselyte/2_SystemScaling.md).
+Подробности в [безопасности](../Security.md), [DevOps](../Devops.md), [наблюдаемости](../Observability.md) и [масштабировании API](../system/design/proselyte/2_SystemScaling.md).
 
 Сначала ответь вслух. Раскрой разбор и повтори ответ на новом примере.
 
@@ -84,7 +84,7 @@ DNS находит адрес сервера по имени. Затем кли�
 
 ## Безопасность
 
-[Прикладная безопасность и Spring Security](../../src/main/java/ru/learn/theory/ApplicationSecurity.md) · [Вопросы на примере API кошелька](../../src/main/java/ru/learn/theory/ApplicationSecurity.md#7-вопросы-для-собеседования)
+[Прикладная безопасность и Spring Security](../ApplicationSecurity.md) · [Вопросы на примере API кошелька](../ApplicationSecurity.md#7-вопросы-для-собеседования)
 
 ### 09. Чем аутентификация отличается от авторизации?
 

@@ -1,10 +1,10 @@
 # Java Core и JVM
 
-[Вернуться к маршруту](../../INTERVIEW.md)
+[Вернуться к маршруту](../../../../../../../INTERVIEW.md)
 
 Дополнительные вопросы · [Язык и контракты](advanced/java-language.md) · [Коллекции и Stream API](advanced/collections.md) · [JVM и диагностика](advanced/jvm.md)
 
-Практика и подробности в [Java Core](../../src/main/java/ru/learn/theory/Java.md), [JVM](../../src/main/java/ru/learn/theory/JVM.md) и [примерах коллекций](../../src/main/java/ru/learn/collections).
+Практика и подробности в [Java Core](../Java.md), [JVM](../JVM.md) и [примерах коллекций](../../collections).
 
 Сначала ответь вслух. Раскрой разбор и повтори ответ на новом примере.
 

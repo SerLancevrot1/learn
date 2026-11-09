@@ -1,10 +1,10 @@
 # Kafka, RabbitMQ, Redis и гарантии доставки
 
-[Вернуться к маршруту](../../INTERVIEW.md)
+[Вернуться к маршруту](../../../../../../../INTERVIEW.md)
 
 Дополнительные вопросы · [Kafka, RabbitMQ и доставка](advanced/brokers.md) · [Redis, MongoDB и Data Lake](advanced/storage.md)
 
-Подробности в [брокерах](../../src/main/java/ru/learn/theory/MessageBrockers.md), [кешировании](../../src/main/java/ru/learn/theory/RedisAndCaching.md) и [практикуме](../../LABS.md). Для сквозной проверки открой [Outbox → Kafka → Inbox](labs.md#кошелёк-outbox-kafka-и-inbox).
+Подробности в [брокерах](../MessageBrockers.md), [кешировании](../RedisAndCaching.md) и [практикуме](../../../../../../../LABS.md). Для сквозной проверки открой [Outbox → Kafka → Inbox](labs.md#кошелёк-outbox-kafka-и-inbox).
 
 Сначала ответь вслух. Раскрой разбор и повтори ответ на новом примере.
 
