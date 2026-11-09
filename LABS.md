@@ -1,5 +1,7 @@
 # Практикум по Redis, Kafka, RabbitMQ, MongoDB и Data Lake
 
+[Маршрут собеседований](INTERVIEW.md) · [Лабораторные по Spring, PostgreSQL и Outbox/Inbox](docs/interview/labs.md)
+
 Лабораторные запускаются как интеграционные тесты. Тест играет роль клиента приложения, управляет моментом отказа и проверяет результат на брокере, в Redis или в БД. Для каждой работы сначала предскажи, что будет видно после сбоя, затем поставь breakpoint и проверь состояние.
 
 ## Запуск
@@ -43,7 +45,7 @@ docker compose --profile labs ps
 2. **Kafka.** Отдельные `send` дают отдельные offsets даже при включённой идемпотентности producer. Повтор из-за неподтверждённого offset возвращает прежнюю запись. В обоих случаях `WalletLedger` сверяет стабильный event ID и меняет баланс один раз.
 3. **RabbitMQ.** Канал оборвался после commit БД до ack. Брокер повторяет доставку. `WalletLedger` пропускает уже применённое событие, после чего consumer подтверждает доставку на новом канале.
 
-В [WalletLedger](src/main/java/ru/learn/delivery/WalletLedger.java) уникальный индекс защищает от гонки обработчиков, а commit БД объединяет отметку inbox и изменение баланса. [Тесты inbox](src/test/java/ru/learn/delivery/WalletLedgerTest.java) отдельно проверяют гонку и откат. Для отправки события из той же БД разбери обратное направление по [описанию Outbox и CDC](src/main/java/ru/learn/theory/MessageBrockers.md#9-outbox-и-cdc).
+В [WalletLedger](src/main/java/ru/learn/delivery/WalletLedger.java) уникальный индекс защищает от гонки обработчиков, а commit БД объединяет отметку inbox и изменение баланса. [Тесты inbox](src/test/java/ru/learn/delivery/WalletLedgerTest.java) отдельно проверяют гонку и откат. Для обратного направления пройди [практику Outbox → Kafka → Inbox](docs/interview/labs.md#кошелёк-outbox-kafka-и-inbox) и сверься с [описанием Outbox и CDC](src/main/java/ru/learn/theory/MessageBrockers.md#9-outbox-и-cdc).
 
 ## Контрольное собеседование
 
