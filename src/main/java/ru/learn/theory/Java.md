@@ -6,7 +6,7 @@
 
 **HashMap:** найди корзину по хешу, проверь равенство ключей через equals. **PECS:** чтение через extends, запись через super. **Stream:** промежуточные операции ленивые.
 
-**Практика.** Сравни порядок обхода в [LinkedHashMapDemo](../collections/LinkedHashMapDemo.java), разбери границы wildcard в [WildCard](../generic/WildCard.java) и найди терминальную операцию в [MapTask](../stream/api/MapTask.java). [JVM и GC](JVM.md)
+**Практика.** Сравни порядок обхода в [LinkedHashMapDemo](../collections/LinkedHashMapDemo.java), разбери границы wildcard в [PecsCopyDemo](../generic/variance/PecsCopyDemo.java) и найди терминальную операцию в [MapTask](../stream/api/MapTask.java). [JVM и GC](JVM.md)
 
 > Конспект-тренажёр для подготовки к собеседованиям.
 > Примеры проверены на **OpenJDK 25** (25.0.4); результаты в лабораторных получены запуском. Многопоточность вынесена в Concurrent.md.
@@ -248,7 +248,7 @@ firstEntry=a=1 lastEntry=b=2      -- LinkedHashMap
 
 ## 9. Generics и PECS
 
-`[ ]` **Короткий ответ:** generics реализованы стиранием типов: `List<String>` и `List<Integer>` различаются при компиляции, но в рантайме это один `List`. Поэтому нельзя `new T[]`, `instanceof List<String>`, перегрузить метод по `List<String>` и `List<Integer>`. Generics инвариантны: `List<Integer>` — не `List<Number>`. Гибкость дают wildcard-ы по правилу PECS: Producer Extends, Consumer Super.
+`[ ]` **Короткий ответ.** `List<String>` и `List<Integer>` различаются при компиляции и стираются до `List`. Поэтому нельзя создать `new T[]`, проверить произвольный `Object` через `instanceof List<String>` или перегрузить метод по `List<String>` и `List<Integer>`. Из-за инвариантности `List<Integer>` нельзя присвоить переменной `List<Number>`. Wildcard даёт гибкость по правилу PECS (Producer Extends, Consumer Super).
 
 ```java
 static <T> void copy(List<? extends T> source, List<? super T> target) {
@@ -256,10 +256,12 @@ static <T> void copy(List<? extends T> source, List<? super T> target) {
 }
 ```
 
-- Из `List<? extends Number>` можно **читать** `Number`, но нельзя добавлять: реальный список мог быть `List<Double>`.
+- Из `List<? extends Number>` можно **читать** `Number`. Компилятор запрещает добавить произвольное ненулевое число, поскольку список может принимать только `Double`.
 - В `List<? super Integer>` можно **добавлять** `Integer`, а читать — только как `Object`.
 
 **Уточнение интервьюера:** «Почему `List<Integer>` нельзя передать как `List<Number>`?» — иначе метод добавил бы туда `Double`, сломав исходный список. Массивы ковариантны (`Integer[]` — это `Number[]`), и такая ошибка ловится только в рантайме: `ArrayStoreException`.
+
+[Все запускаемые примеры по дженерикам](../generic/README.md)
 
 ---
 

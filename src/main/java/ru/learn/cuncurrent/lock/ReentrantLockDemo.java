@@ -1,48 +1,40 @@
 package ru.learn.cuncurrent.lock;
 
-import java.util.concurrent.locks.Lock;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import org.springframework.util.StopWatch;
 
+/**
+ * Показывает ограниченное ожидание через tryLock(). Фоновый пересчёт
+ * пропускает попытку, пока ресурс занят, и может вернуться к нему позже.
+ */
 public class ReentrantLockDemo {
 
-    private static Integer counter = 0;
-
-    //как sychronize, но с расширенными возможностями. Отпустит лок только тот поток, который его захватил
-    private static final Lock lock = new ReentrantLock();
-
-    public static void main(String[] args) {
-        StopWatch stopWatch = new StopWatch();
-        stopWatch.start();
-        Thread a = new Thread(() -> {
-            for (int i = 0; i < 1_000_000; i++) {
-                increment();
-            }
-        });
-
-        Thread b = new Thread(() -> {
-            for (int i = 0; i < 1_000_000; i++) {
-                increment();
-            }
-        });
-
-        a.start();
-        b.start();
-
+    public static void main(String[] args) throws Exception {
+        ReentrantLock reportLock = new ReentrantLock();
+        reportLock.lock();
         try {
-            a.join();
-            b.join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            FutureTask<Boolean> refresh = new FutureTask<>(() -> tryRefresh(reportLock));
+            new Thread(refresh, "report-refresh").start();
+            // В демонстрации удерживаем lock до результата, чтобы гарантировать таймаут.
+            System.out.println("Пересчёт занятого отчёта: " + refresh.get());
+        } finally {
+            reportLock.unlock();
         }
-        stopWatch.stop();
-        System.out.println(stopWatch.getTotalTimeSeconds());
-        System.out.println(counter);
+
+        System.out.println("Повтор после освобождения: " + tryRefresh(reportLock));
     }
 
-    private static void increment() {
-        lock.lock();
-        counter++;
-        lock.unlock();
+    private static boolean tryRefresh(ReentrantLock reportLock) throws InterruptedException {
+        if (!reportLock.tryLock(100, TimeUnit.MILLISECONDS)) {
+            return false;
+        }
+        try {
+            System.out.println("Отчёт пересчитан");
+            return true;
+        } finally {
+            // Освобождаем lock только после успешного захвата, даже если работа завершится с ошибкой.
+            reportLock.unlock();
+        }
     }
 }

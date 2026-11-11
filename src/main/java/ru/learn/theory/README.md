@@ -72,7 +72,7 @@
 
 ## Практика в репозитории
 
-- **Java.** Разбери [атомарный инкремент с монитором](../cuncurrent/IncrementCounterAtomicDemo.java), пройди [цепочку CompletableFuture](../cuncurrent/CompletableFutureDemo.java) или реши [задачу на скользящее окно](../leet/code/easy/LongestSubstringWithoutRepeatingCharacters.java).
+- **Java.** Разбери [гонку при обновлении счётчика](../cuncurrent/shared/CounterDemo.java), пройди [цепочку CompletableFuture](../cuncurrent/async/CompletableFutureDemo.java) или реши [задачу на скользящее окно](../leet/code/easy/LongestSubstringWithoutRepeatingCharacters.java).
 - **Kafka.** Начни с [инструкции по запуску](../kafka/README.md), затем сравни режимы подтверждения в [обработчиках заказа](../kafka/OrderListeners.java).
 - **PostgreSQL.** Используй [локальный сервис postgres](../../../../../../compose.yaml) и SQL из конспектов. Для экспериментов с блокировками открой две сессии к одной БД.
 - **Версии.** [Проект](../../../../../../pom.xml) компилируется под Java 17. Примеры новых возможностей Java в конспектах помечены отдельно.

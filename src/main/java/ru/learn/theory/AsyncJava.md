@@ -8,7 +8,7 @@
 - **CompletableFuture:** `thenApply` преобразует результат, `thenCompose` соединяет зависимые асинхронные шаги.
 - **Виртуальные потоки** полезны при множестве ожидающих I/O-задач. Ограничивай обращения к конечным ресурсам отдельно.
 
-**Код.** [Цепочка CompletableFuture](../cuncurrent/CompletableFutureDemo.java) · [Пул фиксированного размера](../cuncurrent/executor/FixedThreadPoolExecutorDemo.java) · [Fork/Join](../cuncurrent/forkjoin/SumDemo.java). [JMM и блокировки](Concurrent.md)
+**Код.** [Цепочка CompletableFuture](../cuncurrent/async/CompletableFutureDemo.java) · [Single, fixed и cached пулы](../cuncurrent/executor/PoolFactoriesDemo.java) · [Fork/Join](../cuncurrent/forkjoin/ForkJoinSumDemo.java) · [Виртуальные потоки](../cuncurrent/threads/VirtualThreadsDemo.jsh). [JMM и блокировки](Concurrent.md)
 
 > Примеры проверены на **OpenJDK 25** (машина с 2 ядрами); результаты в лабораторных получены запуском. Числа в гонках данных меняются от запуска к запуску — важен не конкретный результат, а то, что он неверный.
 

@@ -1,28 +1,30 @@
 package ru.learn.cuncurrent.lock;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.ArrayDeque;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
+/**
+ * Моделирует starvation в очереди одного рабочего потока.
+ * Если срочные задания постоянно прибывают, обычное может ждать бесконечно.
+ */
 public class StarvationDemo {
 
-    public static void main(String[] args) {
-        AtomicInteger atomicInteger = new AtomicInteger();
-        StarvationWorker t1 = new StarvationWorker(atomicInteger, "t1");
-        t1.setPriority(10);
-        StarvationWorker t2 = new StarvationWorker(atomicInteger, "t2");
-        t2.setPriority(9);
-        StarvationWorker t3 = new StarvationWorker(atomicInteger, "t3");
-        t3.setPriority(8);
-        StarvationWorker t4 = new StarvationWorker(atomicInteger, "t4");
-        t4.setPriority(7);
-        // наименьший приоритет
-        StarvationWorker t5 = new StarvationWorker(atomicInteger, "t5");
-        t5.setPriority(1);
+    /** Порядок констант задаёт приоритет в PriorityQueue. */
+    private enum Job { URGENT, REGULAR }
 
-        t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
-        // Поток будет ожидать выполнения других потоков без шанса на выполнение. Это явления называется starvation
-        t5.start();
+    public static void main(String[] args) {
+        serve("Приоритетная очередь", new PriorityQueue<>());
+        serve("Очередь FIFO", new ArrayDeque<>());
+    }
+
+    private static void serve(String name, Queue<Job> pending) {
+        pending.add(Job.REGULAR);
+        for (int turn = 1; turn <= 4; turn++) {
+            // Перед каждым выбором добавляем новое срочное задание.
+            pending.add(Job.URGENT);
+            System.out.printf("%s, ход %d: %s%n", name, turn, pending.remove());
+        }
+        System.out.println("Обычное задание всё ещё ждёт: " + pending.contains(Job.REGULAR));
     }
 }
