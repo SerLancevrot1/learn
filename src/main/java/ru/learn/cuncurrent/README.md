@@ -73,4 +73,4 @@ jshell --execution local "-J-Dfile.encoding=UTF-8" src/main/java/ru/learn/cuncur
 | [CompletableFutureRecoveryDemo](async/CompletableFutureRecoveryDemo.java) | Ошибка и таймаут дают запасные значения. `allOf` ждёт обе ветки. |
 | [ForkJoinSumDemo](forkjoin/ForkJoinSumDemo.java) | Деление массива на диапазоны через `fork()` и `join()`. Результат сравнивается с последовательной суммой и `parallel()`. |
 
-[Модель памяти и блокировки](../theory/Concurrent.md) · [Пулы, асинхронность и виртуальные потоки](../theory/AsyncJava.md)
+[Модель памяти и блокировки](../../../../../../docs/theory/java/concurrency.md) · [Пулы, асинхронность и виртуальные потоки](../../../../../../docs/theory/java/async.md)

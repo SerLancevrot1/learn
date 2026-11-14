@@ -1,0 +1,73 @@
+name: learn-postgres-recovery
+
+x-postgres: &postgres
+  image: postgres:17
+  environment:
+    PGDATA: /var/lib/postgresql/data/pgdata
+  healthcheck:
+    test: ['CMD', 'pg_isready', '-h', '127.0.0.1', '-U', 'learn', '-d', 'learn']
+    interval: 2s
+    timeout: 3s
+    retries: 25
+
+services:
+  primary:
+    <<: *postgres
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: learn
+      POSTGRES_PASSWORD: learn-local
+      POSTGRES_DB: learn
+    entrypoint: ['/bin/sh', '-ec']
+    command:
+      - |
+        install -d -o postgres -g postgres -m 0700 /archive/base /archive/wal
+        exec docker-entrypoint.sh postgres -c hba_file=/etc/postgresql/lab-pg_hba.conf \
+          -c archive_mode=on -c summarize_wal=on \
+          -c 'archive_command=if test -f /archive/wal/%f; then cmp %p /archive/wal/%f; else cp %p /archive/wal/%f.tmp && mv /archive/wal/%f.tmp /archive/wal/%f; fi'
+    volumes:
+      - primary-data:/var/lib/postgresql/data
+      - archive:/archive
+      - ./pg_hba.conf:/etc/postgresql/lab-pg_hba.conf:ro
+
+  standby:
+    <<: *postgres
+    profiles: ['standby']
+    depends_on:
+      primary:
+        condition: service_healthy
+    entrypoint: ['/bin/sh', '-ec']
+    command:
+      - |
+        if [ ! -s "$$PGDATA/PG_VERSION" ]; then
+          install -d -o postgres -g postgres -m 0700 "$$PGDATA"
+          gosu postgres pg_basebackup -d 'host=primary user=learn password=learn-local application_name=lab_standby' -D "$$PGDATA" -R -X stream
+        fi
+        exec docker-entrypoint.sh postgres -c hot_standby=on
+    volumes:
+      - standby-data:/var/lib/postgresql/data
+
+  restore:
+    <<: *postgres
+    profiles: ['restore']
+    entrypoint: ['/bin/sh', '-ec']
+    command:
+      - |
+        if [ ! -s "$$PGDATA/PG_VERSION" ]; then
+          test -s /archive/base/PG_VERSION
+          install -d -o postgres -g postgres -m 0700 "$$PGDATA"
+          cp -a /archive/base/. "$$PGDATA"
+          touch "$$PGDATA/recovery.signal"
+        fi
+        exec docker-entrypoint.sh postgres \
+          -c 'restore_command=cp /archive/wal/%f %p' \
+          -c recovery_target_name=before_delete -c recovery_target_action=promote
+    volumes:
+      - restore-data:/var/lib/postgresql/data
+      - archive:/archive:ro
+
+volumes:
+  primary-data:
+  standby-data:
+  restore-data:
+  archive:

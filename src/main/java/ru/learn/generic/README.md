@@ -46,4 +46,4 @@ java "-Dfile.encoding=UTF-8" src/main/java/ru/learn/generic/variance/PecsCopyDem
 | [GenericVarargsDemo](runtime/GenericVarargsDemo.java) | Метод объединяет списки через generic varargs. `@SafeVarargs` уместна здесь, потому что массив аргументов только читается и остаётся внутри метода. |
 | [ClassTokenDemo](runtime/ClassTokenDemo.java) | `Class<T>` связывает ключ настройки и тип значения. `Class.cast()` проверяет его во время выполнения. |
 
-[Конспект по Generics и PECS](../theory/Java.md#9-generics-и-pecs) · [JLS о стирании типов](https://docs.oracle.com/javase/specs/jls/se17/html/jls-4.html#jls-4.6)
+[Конспект по Generics и PECS](../../../../../../docs/theory/java/language.md#9-generics-и-pecs) · [JLS о стирании типов](https://docs.oracle.com/javase/specs/jls/se17/html/jls-4.html#jls-4.6)

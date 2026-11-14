@@ -1,6 +1,6 @@
 # Data Lake на практике
 
-[Конспект по Data Lake и Lakehouse](../theory/DataLake.md)
+[Конспект по Data Lake и Lakehouse](../../../../../../docs/theory/data/data-lake.md)
 
 **Стенд** — S3-совместимый SeaweedFS для хранения объектов, DuckDB для SQL и Parquet, Java для загрузки и публикации снимков. Вычисления идут в JVM с временными локальными копиями. Набор данных и каталог снимков хранятся в S3. [SeaweedFS](https://github.com/seaweedfs/seaweedfs) · [DuckDB и Parquet](https://duckdb.org/docs/stable/data/parquet/overview)
 

@@ -1,6 +1,8 @@
-# Практикум по Redis, Kafka, RabbitMQ, MongoDB и Data Lake
+# Практикум по Redis, Kafka, RabbitMQ, MongoDB, Data Lake и Camunda
 
-[Маршрут собеседований](INTERVIEW.md) · [Лабораторные по Spring, PostgreSQL и Outbox/Inbox](src/main/java/ru/learn/theory/interview/labs.md)
+[Все лабораторные](docs/labs/README.md) · [Маршрут собеседований](INTERVIEW.md) · [Лабораторные по Spring, PostgreSQL и Outbox/Inbox](docs/labs/spring-postgres-outbox.md)
+
+В [практикуме Java Tech Lead](docs/interview/tech-lead.md) есть отдельные Compose-стенды для observability и Nginx, репликации Kafka, OAuth с Keycloak и восстановления PostgreSQL через PITR.
 
 Лабораторные запускаются как интеграционные тесты. Тест играет роль клиента приложения, управляет моментом отказа и проверяет результат на брокере, в Redis или в БД. Для каждой работы сначала предскажи, что будет видно после сбоя, затем поставь breakpoint и проверь состояние.
 
@@ -26,6 +28,8 @@ docker compose --profile labs ps
 
 `docker compose --profile labs stop kafka redis rabbitmq mongo lake-s3` останавливает стенд. У Redis, RabbitMQ, MongoDB и SeaweedFS есть именованные тома. Kafka в этой конфигурации хранит данные в контейнере, его пересоздание сбросит стенд. Сервисы одноузловые.
 
+Для Camunda используй [отдельный Compose-стенд и инструкцию](docs/labs/camunda/README.md). Тесты этой лабораторной включаются переменной `LAB_CAMUNDA_URL`.
+
 ## Маршрут изучения
 
 | Этап | Что воспроизвести | Что проверить |
@@ -36,6 +40,7 @@ docker compose --profile labs ps
 | [RabbitMQ](src/main/java/ru/learn/rabbitmq/README.md) | Ошибиться в routing key, закрыть канал до ack, исчерпать отложенные повторы | Confirm и return, флаг redelivered, заголовки DLQ, счётчик попыток |
 | [MongoDB](src/main/java/ru/learn/mongo/README.md) | Запросить историю заказов с индексом и без него, откатить списание нескольких SKU, восстановить change stream | План выполнения, остатки и заказ после rollback, resume token |
 | [Data Lake](src/main/java/ru/learn/datalake/README.md) | Загрузить Bronze, пересобрать Parquet после поздних данных, оставить незавершённую публикацию, запустить конкурирующую сборку | Карантин, партиции по дате события, старый и новый snapshot, конфликт ETag |
+| [Camunda 8](docs/labs/camunda/README.md) | Опубликовать раннюю оплату, дождаться дедлайна, исчерпать повторы и восстановить job | Конечные ветки, incident, повторная выдача и одна запись резерва |
 
 ## Разбор одного инцидента тремя способами
 
@@ -45,7 +50,7 @@ docker compose --profile labs ps
 2. **Kafka.** Отдельные `send` дают отдельные offsets даже при включённой идемпотентности producer. Повтор из-за неподтверждённого offset возвращает прежнюю запись. В обоих случаях `WalletLedger` сверяет стабильный event ID и меняет баланс один раз.
 3. **RabbitMQ.** Канал оборвался после commit БД до ack. Брокер повторяет доставку. `WalletLedger` пропускает уже применённое событие, после чего consumer подтверждает доставку на новом канале.
 
-В [WalletLedger](src/main/java/ru/learn/delivery/WalletLedger.java) уникальный индекс защищает от гонки обработчиков, а commit БД объединяет отметку inbox и изменение баланса. [Тесты inbox](src/test/java/ru/learn/delivery/WalletLedgerTest.java) отдельно проверяют гонку и откат. Для обратного направления пройди [практику Outbox → Kafka → Inbox](src/main/java/ru/learn/theory/interview/labs.md#кошелёк-outbox-kafka-и-inbox) и сверься с [описанием Outbox и CDC](src/main/java/ru/learn/theory/MessageBrockers.md#9-outbox-и-cdc).
+В [WalletLedger](src/main/java/ru/learn/delivery/WalletLedger.java) уникальный индекс защищает от гонки обработчиков, а commit БД объединяет отметку inbox и изменение баланса. [Тесты inbox](src/test/java/ru/learn/delivery/WalletLedgerTest.java) отдельно проверяют гонку и откат. Для обратного направления пройди [практику Outbox → Kafka → Inbox](docs/labs/spring-postgres-outbox.md#кошелёк-outbox-kafka-и-inbox) и сверься с [описанием Outbox и CDC](docs/theory/messaging/delivery-patterns.md#9-outbox-и-cdc).
 
 ## Контрольное собеседование
 
@@ -57,4 +62,4 @@ docker compose --profile labs ps
 - Где в MongoDB достаточно условного обновления одного документа, а где операция требует одной транзакции между несколькими документами? Покажи обе границы на остатках товара.
 - В Data Lake пришло исправление к событию за вчера. Какие данные читаешь и переписываешь, где происходит commit и что увидит читатель, начавший запрос до публикации?
 
-Теория для повторения — [брокеры](src/main/java/ru/learn/theory/MessageBrockers.md), [Redis](src/main/java/ru/learn/theory/RedisAndCaching.md), [MongoDB](src/main/java/ru/learn/theory/MongoDB.md) и [Data Lake](src/main/java/ru/learn/theory/DataLake.md).
+Теория для повторения — [брокеры](docs/theory/messaging/README.md), [Redis](docs/theory/data/redis-and-caching.md), [MongoDB](docs/theory/data/mongodb.md) и [Data Lake](docs/theory/data/data-lake.md).

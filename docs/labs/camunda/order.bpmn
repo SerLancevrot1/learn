@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+    xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+    xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+    xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+    id="OrderDefinitions" targetNamespace="https://ru.learn/bpmn"
+    modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <!-- Корреляция связывает сообщение об оплате с ожидающим процессом конкретного заказа. -->
+  <bpmn:message id="PaymentMessage" name="LearnPaymentReceived">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="= orderId" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:error id="StockUnavailable" name="Нет товара" errorCode="OUT_OF_STOCK" />
+  <bpmn:process id="learn-order" name="Обработка заказа" isExecutable="true">
+    <bpmn:startEvent id="OrderStarted" name="Заказ принят">
+      <bpmn:outgoing>ToReserve</bpmn:outgoing>
+    </bpmn:startEvent>
+    <!-- Тип задания включает номер заказа для изоляции учебных запусков. В приложении обычно выбирают постоянный тип по операции. -->
+    <bpmn:serviceTask id="ReserveStock" name="Зарезервировать товар">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="= &quot;learn-reserve-&quot; + orderId" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>ToReserve</bpmn:incoming>
+      <bpmn:outgoing>ToWait</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <!-- Граничное событие ловит ожидаемый бизнес-отказ OUT_OF_STOCK. Техническая команда fail попадёт в механизм повторов. -->
+    <bpmn:boundaryEvent id="StockError" name="Нет товара" attachedToRef="ReserveStock">
+      <bpmn:outgoing>ToRejected</bpmn:outgoing>
+      <bpmn:errorEventDefinition errorRef="StockUnavailable" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="OrderRejected" name="Заказ отклонён">
+      <bpmn:incoming>ToRejected</bpmn:incoming>
+    </bpmn:endEvent>
+    <!-- Движок ждёт первое из двух событий. Срабатывание одной ветки отменяет ожидание второй. -->
+    <bpmn:eventBasedGateway id="WaitForPayment" name="Ждать оплату">
+      <bpmn:incoming>ToWait</bpmn:incoming>
+      <bpmn:outgoing>ToPayment</bpmn:outgoing>
+      <bpmn:outgoing>ToTimer</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="PaymentReceived" name="Оплата получена">
+      <bpmn:incoming>ToPayment</bpmn:incoming>
+      <bpmn:outgoing>ToPaid</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="PaymentMessage" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="OrderPaid" name="Заказ оплачен">
+      <bpmn:incoming>ToPaid</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="PaymentDeadline" name="12 секунд">
+      <bpmn:incoming>ToTimer</bpmn:incoming>
+      <bpmn:outgoing>ToRelease</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration>PT12S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <!-- Снятие резерва — отдельное действие с собственным worker. Движок ждёт подтверждения, прежде чем закрыть заказ. -->
+    <bpmn:serviceTask id="ReleaseStock" name="Снять резерв">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="= &quot;learn-release-&quot; + orderId" retries="3" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>ToRelease</bpmn:incoming>
+      <bpmn:outgoing>ToExpired</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="OrderExpired" name="Заказ просрочен">
+      <bpmn:incoming>ToExpired</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="ToReserve" sourceRef="OrderStarted" targetRef="ReserveStock" />
+    <bpmn:sequenceFlow id="ToWait" sourceRef="ReserveStock" targetRef="WaitForPayment" />
+    <bpmn:sequenceFlow id="ToRejected" sourceRef="StockError" targetRef="OrderRejected" />
+    <bpmn:sequenceFlow id="ToPayment" sourceRef="WaitForPayment" targetRef="PaymentReceived" />
+    <bpmn:sequenceFlow id="ToPaid" sourceRef="PaymentReceived" targetRef="OrderPaid" />
+    <bpmn:sequenceFlow id="ToTimer" sourceRef="WaitForPayment" targetRef="PaymentDeadline" />
+    <bpmn:sequenceFlow id="ToRelease" sourceRef="PaymentDeadline" targetRef="ReleaseStock" />
+    <bpmn:sequenceFlow id="ToExpired" sourceRef="ReleaseStock" targetRef="OrderExpired" />
+  </bpmn:process>
+  <!-- BPMN DI хранит координаты, чтобы файл можно было открыть как схему в Modeler и Operate. -->
+  <bpmndi:BPMNDiagram id="OrderDiagram">
+    <bpmndi:BPMNPlane id="OrderPlane" bpmnElement="learn-order">
+      <bpmndi:BPMNShape id="OrderStarted_di" bpmnElement="OrderStarted">
+        <dc:Bounds x="85" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="59" y="243" width="88" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ReserveStock_di" bpmnElement="ReserveStock">
+        <dc:Bounds x="170" y="180" width="115" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StockError_di" bpmnElement="StockError">
+        <dc:Bounds x="211" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="252" y="252" width="88" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="OrderRejected_di" bpmnElement="OrderRejected">
+        <dc:Bounds x="211" y="326" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="185" y="367" width="88" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="WaitForPayment_di" bpmnElement="WaitForPayment">
+        <dc:Bounds x="346" y="195" width="50" height="50" />
+        <bpmndi:BPMNLabel><dc:Bounds x="327" y="171" width="88" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PaymentReceived_di" bpmnElement="PaymentReceived">
+        <dc:Bounds x="469" y="129" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="428" y="170" width="118" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="OrderPaid_di" bpmnElement="OrderPaid">
+        <dc:Bounds x="748" y="129" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="722" y="170" width="88" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PaymentDeadline_di" bpmnElement="PaymentDeadline">
+        <dc:Bounds x="469" y="263" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="443" y="304" width="88" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ReleaseStock_di" bpmnElement="ReleaseStock">
+        <dc:Bounds x="560" y="241" width="115" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="OrderExpired_di" bpmnElement="OrderExpired">
+        <dc:Bounds x="748" y="263" width="36" height="36" />
+        <bpmndi:BPMNLabel><dc:Bounds x="722" y="304" width="88" height="22" /></bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="ToReserve_di" bpmnElement="ToReserve">
+        <di:waypoint x="121" y="220" />
+        <di:waypoint x="170" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ToWait_di" bpmnElement="ToWait">
+        <di:waypoint x="285" y="220" />
+        <di:waypoint x="346" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ToRejected_di" bpmnElement="ToRejected">
+        <di:waypoint x="229" y="278" />
+        <di:waypoint x="229" y="326" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ToPayment_di" bpmnElement="ToPayment">
+        <di:waypoint x="371" y="195" />
+        <di:waypoint x="371" y="147" />
+        <di:waypoint x="469" y="147" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ToPaid_di" bpmnElement="ToPaid">
+        <di:waypoint x="505" y="147" />
+        <di:waypoint x="748" y="147" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ToTimer_di" bpmnElement="ToTimer">
+        <di:waypoint x="371" y="245" />
+        <di:waypoint x="371" y="281" />
+        <di:waypoint x="469" y="281" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ToRelease_di" bpmnElement="ToRelease">
+        <di:waypoint x="505" y="281" />
+        <di:waypoint x="560" y="281" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ToExpired_di" bpmnElement="ToExpired">
+        <di:waypoint x="675" y="281" />
+        <di:waypoint x="748" y="281" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

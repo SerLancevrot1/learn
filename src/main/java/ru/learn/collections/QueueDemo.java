@@ -1,14 +1,15 @@
 package ru.learn.collections;
 
-import java.util.Deque;
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Stack;
 
+/** Показывает очередь FIFO. Первым забирается тот элемент, который добавили раньше всех. */
 public class QueueDemo {
 
     public static void main(String[] args) {
-        Queue<Integer> queue = new LinkedList<>();
+        // Интерфейс Queue показывает, что пример работает только с операциями очереди.
+        // ArrayDeque хранит элементы в растущем кольцевом массиве, offer добавляет в хвост.
+        Queue<Integer> queue = new ArrayDeque<>();
         queue.offer(1);
         queue.offer(2);
         queue.offer(3);
@@ -17,14 +18,12 @@ public class QueueDemo {
         queue.offer(6);
         queue.offer(7);
 
-        System.out.println(queue.poll());
-        System.out.println(queue.poll());
-        System.out.println(queue.poll());
-        System.out.println(queue.poll());
-        System.out.println(queue.poll());
-        System.out.println(queue.poll());
-        System.out.println(queue.poll());
-        System.out.println(queue.poll());
-
+        // poll забирает голову. Элементы выйдут в порядке 1–7, после них появится null.
+        // ArrayDeque запрещает хранить null, поэтому этот результат однозначно означает пустую очередь.
+        Integer next;
+        while ((next = queue.poll()) != null) {
+            System.out.println(next);
+        }
+        System.out.println(next);
     }
 }

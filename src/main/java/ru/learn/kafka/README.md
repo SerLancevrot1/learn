@@ -1,6 +1,6 @@
 # Kafka на практике
 
-[Общий маршрут](../../../../../../LABS.md) · [Теория](../theory/MessageBrockers.md)
+[Общий маршрут](../../../../../../LABS.md) · [Теория](../../../../../../docs/theory/messaging/kafka.md)
 
 ## 1. Публикация и чтение на стенде
 
@@ -57,7 +57,7 @@ docker compose exec kafka /opt/kafka/bin/kafka-consumer-groups.sh --bootstrap-se
 3. [Тест контейнера Spring](../../../../../test/java/ru/learn/kafka/transactions/SpringKafkaTransactionIntegrationTest.java) выбрасывает исключение после успешного `send().join()`. Контейнер откатывает транзакцию и повторно читает вход. Два вызова обработчика дают один видимый результат для `read_committed`, а входной offset становится равен 1.
 4. Отдельный тест удерживает транзакцию открытой, пока другой producer публикует обычное сообщение в ту же партицию. `read_committed` упирается в Last Stable Offset. После abort он пропускает отменённую запись и читает более позднее сообщение. [Изоляция в KafkaConsumer](https://kafka.apache.org/39/javadoc/org/apache/kafka/clients/consumer/KafkaConsumer.html)
 
-Exactly-once здесь относится к атомарному Kafka → Kafka: выходные записи и offsets. Сам обработчик может исполняться несколько раз. Для изменения отдельной БД смотри [WalletLedger](../delivery/WalletLedger.java), для публикации после изменения БД — [Outbox](../theory/MessageBrockers.md#9-outbox-и-cdc).
+Exactly-once здесь относится к атомарному Kafka → Kafka: выходные записи и offsets. Сам обработчик может исполняться несколько раз. Для изменения отдельной БД смотри [WalletLedger](../delivery/WalletLedger.java), для публикации после изменения БД — [Outbox](../../../../../../docs/theory/messaging/delivery-patterns.md#9-outbox-и-cdc).
 
 ## 4. Эксперименты перед собеседованием
 

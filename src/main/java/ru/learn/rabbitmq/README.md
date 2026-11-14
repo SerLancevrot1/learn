@@ -25,4 +25,4 @@ Management UI на `http://localhost:15672`, вход `learn / learn`. Тест�
 
 В стенде используются classic queues. Встроенный перенос через DLX по умолчанию не даёт строгой гарантии сохранности при недоступности цели. Отдельно изучи quorum queues и условия at-least-once dead lettering, если потеря при переносе недопустима. Для production правила DLX удобнее задавать политикой, а возвращённые или зависшие сообщения нужно наблюдать и разбирать перед replay. [Dead-lettering RabbitMQ](https://www.rabbitmq.com/docs/dlx)
 
-[Общий маршрут](../../../../../../LABS.md) · [Теория](../theory/MessageBrockers.md)
+[Общий маршрут](../../../../../../LABS.md) · [Теория](../../../../../../docs/theory/messaging/rabbitmq.md)

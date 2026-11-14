@@ -1,0 +1,22 @@
+name: learn-oauth
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.6.4
+    command: ['start-dev', '--import-realm']
+    environment:
+      KC_HOSTNAME: http://localhost:8180
+    volumes:
+      - ./lab-realm.json:/opt/keycloak/data/import/lab-realm.json:ro
+    ports:
+      - '127.0.0.1:8180:8080'
+
+  api:
+    build: .
+    environment:
+      ISSUER: http://localhost:8180/realms/lab
+      KEYCLOAK_REALM_URL: http://keycloak:8080/realms/lab
+      INTROSPECTION_SECRET: lab-api-local-only
+    ports:
+      - '127.0.0.1:8181:8080'
+

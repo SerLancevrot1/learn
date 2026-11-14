@@ -1,6 +1,6 @@
 # MongoDB на практике
 
-[Конспект по MongoDB](../theory/MongoDB.md)
+[Конспект по MongoDB](../../../../../../docs/theory/data/mongodb.md)
 
 Из корня проекта:
 

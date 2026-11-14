@@ -1,0 +1,57 @@
+name: learn-kafka-replication
+
+x-environment: &common-environment
+  CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk
+  KAFKA_CONTROLLER_QUORUM_VOTERS: '100@controller:9093'
+  KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+  KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT'
+  KAFKA_HEAP_OPTS: '-Xms192m -Xmx384m'
+
+x-broker-environment: &broker-environment
+  <<: *common-environment
+  KAFKA_PROCESS_ROLES: broker
+  KAFKA_LISTENERS: 'INTERNAL://:9092'
+  KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+  KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE: 'false'
+
+x-broker: &broker
+  image: apache/kafka:3.9.0
+  depends_on:
+    - controller
+  healthcheck:
+    test: ['CMD', '/opt/kafka/bin/kafka-broker-api-versions.sh', '--bootstrap-server', 'localhost:9092']
+    interval: 5s
+    timeout: 10s
+    retries: 25
+
+services:
+  controller:
+    image: apache/kafka:3.9.0
+    environment:
+      <<: *common-environment
+      KAFKA_PROCESS_ROLES: controller
+      KAFKA_NODE_ID: 100
+      KAFKA_LISTENERS: 'CONTROLLER://:9093'
+
+  broker1:
+    <<: *broker
+    environment:
+      <<: *broker-environment
+      KAFKA_NODE_ID: 1
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://broker1:9092'
+
+  broker2:
+    <<: *broker
+    environment:
+      <<: *broker-environment
+      KAFKA_NODE_ID: 2
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://broker2:9092'
+
+  broker3:
+    <<: *broker
+    environment:
+      <<: *broker-environment
+      KAFKA_NODE_ID: 3
+      KAFKA_ADVERTISED_LISTENERS: 'INTERNAL://broker3:9092'

@@ -1,0 +1,56 @@
+{
+  "realm": "lab",
+  "enabled": true,
+  "sslRequired": "none",
+  "accessTokenLifespan": 180,
+  "revokeRefreshToken": true,
+  "refreshTokenMaxReuse": 0,
+  "clients": [
+    {
+      "clientId": "lab-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "redirectUris": ["http://localhost:8181/callback"],
+      "attributes": { "pkce.code.challenge.method": "S256" },
+      "defaultClientScopes": ["basic", "profile"],
+      "optionalClientScopes": ["email"],
+      "protocolMappers": [
+        {
+          "name": "lab-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "config": {
+            "included.custom.audience": "lab-api",
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    },
+    {
+      "clientId": "lab-api",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "lab-api-local-only",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  ],
+  "users": [
+    {
+      "username": "learner",
+      "enabled": true,
+      "firstName": "Lab",
+      "lastName": "Learner",
+      "email": "learner@example.test",
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "learn-local", "temporary": false }]
+    }
+  ]
+}
