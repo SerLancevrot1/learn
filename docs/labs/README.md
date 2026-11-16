@@ -8,6 +8,7 @@
 | Spring proxy, транзакции PostgreSQL и доставка событий | [Spring, PostgreSQL и Outbox/Inbox](spring-postgres-outbox.md) |
 | Гарантии Kafka при отказе реплик | [Стенд Kafka](kafka/README.md) |
 | Сбор логов и метрик, диагностика Nginx | [Стенд observability](observability/README.md) |
+| Нагрузочный прогон, чтение отчёта и проверка порогов | [Практика с k6](../theory/operations/k6.md#первый-прогон) |
 | OAuth 2.0, OpenID Connect, Keycloak и PKCE | [Стенд OAuth](oauth/README.md) |
 | Репликация и PITR | [Стенд PostgreSQL](postgresql/README.md) |
 | BPMN, обработка заказа, повторы и incidents | [Стенд Camunda 8](camunda/README.md) |

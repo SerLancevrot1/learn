@@ -6,6 +6,8 @@
 
 Для повторного интервью на Java Tech Lead пройди [маршрут по фидбеку](docs/interview/tech-lead.md) с упражнениями по Observability, Nginx, Kafka, OAuth, восстановлению PostgreSQL, Outbox и JPA.
 
+Для вопросов о нагрузочном тестировании разбери [k6, профили нагрузки и диагностику под нагрузкой](docs/theory/operations/k6.md#вопросы-на-собеседовании).
+
 ## Банк вопросов
 
 Всего **770 вопросов с ответами**. Ниже — 248 базовых. Ещё **522** разбиты на 13 блоков с задачами на чтение кода, диагностику и проектирование. [Дополнительные вопросы](docs/interview/advanced/README.md)
@@ -23,7 +25,7 @@
 | [BPMN и Camunda](docs/interview/base/bpmn.md) | 18 | Выбор движка, Camunda 7 и 8, повтор job, корреляция, компенсации и миграция |
 | [SOLID и паттерны проектирования](docs/interview/base/patterns.md) | 26 | Все 23 паттерна GoF, примеры применения и цена абстракций |
 
-[Java Collections](docs/theory/java/collections.md) · [Пять задач с решениями и мини-собеседование](src/main/java/ru/learn/collections/README.md)
+[Java Collections](docs/theory/java/collections.md) · [Практикум с решениями и мини-собеседованием](src/main/java/ru/learn/collections/README.md)
 
 ## Как работать с ответами
 

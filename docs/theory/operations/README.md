@@ -8,6 +8,7 @@
 | --- | --- |
 | Dockerfile, Kubernetes, пробы, лимиты, rollout, HPA и CI/CD | [DevOps](devops.md) |
 | Метрики, PromQL, кардинальность, логи, трейсы, алерты и разбор инцидента | [Наблюдаемость](observability.md) |
+| Нагрузочные тесты HTTP API, VU, RPS, пороги и разбор результатов | [Практический гайд по k6](k6.md) |
 
 **Практика:** [Docker для начинающих](../../interview/tech-lead.md#как-запускать-стенды-в-docker) · [логи и метрики в стенде с Nginx](../../labs/observability/README.md)
 

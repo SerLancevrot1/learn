@@ -4,11 +4,13 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 /** Решения задач на выбор коллекции. Условия и подсказки лежат в README этого пакета. */
 public final class CollectionsExercises {
@@ -85,5 +87,31 @@ public final class CollectionsExercises {
         }
         Collections.reverse(result);
         return result;
+    }
+
+    /**
+     * Возвращает число рёбер кратчайшего пути в ориентированном графе, либо -1 при отсутствии пути.
+     * Вершины и списки соседей заданы без null. У отсутствующего ключа нет исходящих рёбер.
+     */
+    public static <T> int shortestDistance(Map<T, List<T>> graph, T start, T target) {
+        Queue<T> pending = new ArrayDeque<>();
+        Map<T, Integer> distances = new HashMap<>();
+        pending.offer(start);
+        distances.put(start, 0);
+
+        T current;
+        while ((current = pending.poll()) != null) {
+            int distance = distances.get(current);
+            if (current.equals(target)) {
+                return distance;
+            }
+            for (T neighbor : graph.getOrDefault(current, List.of())) {
+                // Отмечаем вершину при постановке в очередь. Циклы и повторные рёбра её не вернут.
+                if (distances.putIfAbsent(neighbor, distance + 1) == null) {
+                    pending.offer(neighbor);
+                }
+            }
+        }
+        return -1;
     }
 }

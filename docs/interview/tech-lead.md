@@ -76,6 +76,8 @@ docker compose config --services
 
 ## Observability и Nginx
 
+[Путь от Java-лога до Kibana и роли Prometheus, Grafana, Tempo и Loki](../theory/operations/observability.md#путь-от-java-до-kibana-и-grafana) · [Ответ вслух за минуту](../theory/operations/observability.md#ответ-вслух-за-минуту)
+
 **Ответ про логи.** Контейнер пишет в `stdout` и `stderr`. Runtime сохраняет потоки в формате CRI на узле. Kubelet отдаёт локальный фрагмент через `kubectl logs` и управляет ротацией. Узловой Fluent Bit или Vector обычно работает как `DaemonSet`, читает файлы контейнеров, добавляет метаданные Kubernetes и отправляет записи в Elasticsearch или Loki. В Elasticsearch записи индексируются и ищутся по полям, Kibana показывает результат поиска. Logstash или ingest pipeline подключают при необходимости преобразований. Grafana может читать Loki как отдельный источник. [Архитектура логирования Kubernetes](https://kubernetes.io/docs/concepts/cluster-administration/logging/)
 
 **Ответ про метрики.** В Spring Boot Micrometer собирает счётчики и таймеры, Actuator открывает `/actuator/prometheus`. Prometheus периодически забирает значения, хранит временные ряды и выполняет PromQL. Grafana запрашивает Prometheus для отображения графиков. Логи и трейсы связываю по trace ID. Для метрик оставляю ограниченные измерения вроде `route`, `method` и `status`. Уникальный `request_id` сделал бы отдельный временной ряд почти для каждого запроса. [Конспект по метрикам](../theory/operations/observability.md#13-java-micrometer-и-actuator)

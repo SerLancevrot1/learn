@@ -1,29 +1,56 @@
 package ru.learn.collections;
 
 import java.util.ArrayDeque;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
-/** Показывает очередь FIFO. Первым забирается тот элемент, который добавили раньше всех. */
+/** Обслуживание заявок по поступлению, по приоритету и с обоих концов очереди. */
 public class QueueDemo {
-
     public static void main(String[] args) {
-        // Интерфейс Queue показывает, что пример работает только с операциями очереди.
-        // ArrayDeque хранит элементы в растущем кольцевом массиве, offer добавляет в хвост.
-        Queue<Integer> queue = new ArrayDeque<>();
-        queue.offer(1);
-        queue.offer(2);
-        queue.offer(3);
-        queue.offer(4);
-        queue.offer(5);
-        queue.offer(6);
-        queue.offer(7);
+        fifo();
+        priority();
+        bothEnds();
+    }
 
-        // poll забирает голову. Элементы выйдут в порядке 1–7, после них появится null.
-        // ArrayDeque запрещает хранить null, поэтому этот результат однозначно означает пустую очередь.
-        Integer next;
-        while ((next = queue.poll()) != null) {
-            System.out.println(next);
+    private static void fifo() {
+        Queue<String> requests = new ArrayDeque<>();
+        requests.offer("Заявка 101: новый пароль");
+        requests.offer("Заявка 102: выписка");
+        System.out.println("Следующая без извлечения: " + requests.peek());
+
+        String request;
+        while ((request = requests.poll()) != null) {
+            System.out.println("FIFO: " + request);
         }
-        System.out.println(next);
+        System.out.println("После обработки всех заявок: " + requests.poll());
+    }
+
+    private static void priority() {
+        // Меньшее число означает более срочную заявку.
+        Queue<Ticket> tickets = new PriorityQueue<>(Comparator.comparingInt(Ticket::priority)
+                .thenComparingLong(Ticket::arrivalOrder));
+        tickets.offer(new Ticket("Отчёт открывается медленно", 3, 1));
+        tickets.offer(new Ticket("Оплата недоступна", 1, 2));
+        tickets.offer(new Ticket("Вход недоступен", 1, 3));
+
+        // У двух аварий одинаковый приоритет. Порядок поступления разрешает ничью.
+        // Чтобы получить этот порядок, извлекаем голову. Итератор обходит элементы кучи.
+        Ticket ticket;
+        while ((ticket = tickets.poll()) != null) {
+            System.out.println("По приоритету: " + ticket.subject());
+        }
+    }
+
+    private static void bothEnds() {
+        Deque<String> requests = new ArrayDeque<>();
+        requests.offerLast("Обычная заявка");
+        requests.offerFirst("Повтор после временного сбоя");
+        System.out.println("Снять с начала: " + requests.pollFirst());
+        System.out.println("Отменить последнюю заявку: " + requests.pollLast());
+    }
+
+    private record Ticket(String subject, int priority, long arrivalOrder) {
     }
 }

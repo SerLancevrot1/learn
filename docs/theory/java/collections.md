@@ -94,6 +94,12 @@
 
 [API Queue](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Queue.html)
 
+В [практикуме по очередям](../../../src/main/java/ru/learn/collections/queues.md) есть таблица обычных и конкурентных реализаций. Примеры показывают заявки FIFO, равные приоритеты, ограниченный буфер, отложенный повтор и прямую передачу потребителю.
+
+## Конкурентные коллекции
+
+`ConcurrentHashMap` даёт атомарные операции над записью по ключу, `ConcurrentSkipListMap` и `ConcurrentSkipListSet` поддерживают сортировку и диапазоны, а итераторы `CopyOnWriteArrayList` и `CopyOnWriteArraySet` обходят снимок. У конкурентных очередей условия различаются по ёмкости и способу ожидания. [Контракты и примеры конкурентных коллекций](../../../src/main/java/ru/learn/collections/concurrent.md) · [Java 17 API](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/package-summary.html)
+
 ## Копия, представление и изменение при обходе
 
 | Выражение | Что получится |

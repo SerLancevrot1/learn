@@ -70,6 +70,20 @@ class CollectionsExercisesTest {
     }
 
     @Test
+    void shortestDistanceChoosesShortestRouteEvenWhenLongerBranchComesFirst() {
+        Map<String, List<String>> routes = Map.of(
+                "Вокзал", List.of("Музей", "Парк"),
+                "Музей", List.of("Вокзал", "Школа"),
+                "Школа", List.of("Аэропорт"),
+                "Парк", List.of("Аэропорт"));
+
+        assertEquals(2, CollectionsExercises.shortestDistance(routes, "Вокзал", "Аэропорт"));
+        assertEquals(-1, CollectionsExercises.shortestDistance(routes, "Вокзал", "Стадион"));
+        assertEquals(-1, CollectionsExercises.shortestDistance(routes, "Аэропорт", "Парк"));
+        assertEquals(0, CollectionsExercises.shortestDistance(routes, "Аэропорт", "Аэропорт"));
+    }
+
+    @Test
     void cacheEvictsLeastRecentlyUsedEntryAfterRead() {
         LruCache<String, Integer> cache = new LruCache<>(2);
         cache.put("a", 1);

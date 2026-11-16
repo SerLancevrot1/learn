@@ -1,8 +1,29 @@
-# Практикум по Java Collections
+# Коллекции Java
 
 [Теория и таблица выбора](../../../../../../docs/theory/java/collections.md) · [Банк вопросов по коллекциям и Stream API](../../../../../../docs/interview/advanced/collections.md)
 
-Для каждой задачи сначала запиши ожидаемый результат и выбери коллекцию. Реализуй решение сам, затем сравни с кодом и запусти тесты. На интервью проговори, какую операцию нужно выполнять быстро, какой нужен порядок и сколько памяти занимает решение.
+## Как выбрать коллекцию
+
+| Что нужно | С чего начать | Пример |
+| --- | --- | --- |
+| Хранить последовательность с повторами и читать по индексу | `ArrayList` | [Маршрут и редактирование через ListIterator](ListDemo.java) |
+| Проверять уникальность | `HashSet`. Для порядка вставки `LinkedHashSet`, для диапазонов `TreeSet` | [Номера заказов и EnumSet](SetDemo.java) |
+| Искать или группировать по ключу | `HashMap`. Для порядка вставки `LinkedHashMap`, для сортировки и диапазонов `TreeMap` | [Группы заказов и EnumMap](MapDemo.java) · [Два порядка обхода карты](LinkedHashMapDemo.java) |
+| Обслуживать по порядку поступления, с обоих концов или в порядке отмены | `ArrayDeque` | [Заявки FIFO и дека](QueueDemo.java) · [Стек отмены](StackDemo.java) |
+| Первой брать самую срочную задачу | `PriorityQueue` | [Срочные заявки с одинаковым приоритетом](QueueDemo.java) |
+| Передавать задачи между потоками | `ArrayBlockingQueue` для ограниченного буфера. `ConcurrentLinkedQueue` для FIFO без ожидания данных | [Очереди и таблица реализаций](queues.md) |
+| Разделять счётчики, подписчиков или отсортированные ключи между потоками | `ConcurrentHashMap`, `CopyOnWriteArrayList` или `ConcurrentSkipListMap` в зависимости от контракта | [Конкурентные коллекции и атомарные операции](concurrent.md) |
+| Передать наружу доступ на чтение или сохранить состав коллекции | `Collections.unmodifiableList` для живого представления, `List.copyOf` для самостоятельного состава | [Корзина, выписка и представление карты](CollectionViewsDemo.java) |
+
+`List`, `Set` и `Queue` расширяют `Collection`, а `Deque` расширяет `Queue`. `Map` образует отдельную ветку. `SortedSet` и `SortedMap` добавляют порядок по сравнению, `NavigableSet` и `NavigableMap` дают поиск соседей и представления диапазонов. `BlockingQueue` добавляет ожидание, `BlockingDeque` переносит его на оба конца, `TransferQueue` даёт дождаться получения элемента. [Иерархия Java Collections Framework](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/package-summary.html) · [java.util.concurrent](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/package-summary.html)
+
+### Контракты, которые меняют выбор
+
+- Для хеш-коллекций `equals` и `hashCode` должны быть согласованы. Поля, по которым ключ сравнивается и хешируется, должны оставаться стабильными. Для `TreeSet` и `TreeMap` нулевой результат сравнения означает тот же элемент или ключ. [Контракты Set, Map и HashMap](../../../../../../docs/theory/java/collections.md#set-и-map-какой-порядок-нужен)
+- `subList`, `keySet` и `subMap` дают связанные представления. `List.copyOf`, `Set.copyOf` и `Map.copyOf` фиксируют состав и запрещают изменения через результат, сохраняя ссылки на сами элементы. Фабрики `List.of`, `Set.of`, `Map.of` запрещают `null`. `Set.of` отвергает дубликаты, `Map.of` отвергает повторяющиеся ключи. [Копии, представления и итераторы](../../../../../../docs/theory/java/collections.md#копия-представление-и-изменение-при-обходе)
+- `Collections.sort`, `reverse`, `shuffle` и `binarySearch` работают с коллекциями через статические методы. Перед `binarySearch` отсортируй список по тому же сравнению, а для повторных поисков по индексу используй список с быстрым произвольным доступом. [API Collections](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Collections.html)
+- `WeakHashMap` хранит ключи через слабые ссылки. Запись может исчезнуть после сборки ключа, если он больше недостижим вне слабых ссылок. `IdentityHashMap` сравнивает ссылки по `==`, что полезно при обходе графа объектов. `Hashtable`, `Vector` и `Stack` встречаются в старых API. [WeakHashMap](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/WeakHashMap.html) · [IdentityHashMap](https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/IdentityHashMap.html) · [VectorDemo](VectorDemo.java)
+- Примеры компилируются для Java 17. С Java 21 последовательный порядок выражают `SequencedCollection`, `SequencedSet` и `SequencedMap`. Эти интерфейсы дают доступ к обоим концам и обратное представление `reversed()`. [Sequenced Collections в Java 21](https://docs.oracle.com/en/java/javase/21/core/creating-sequenced-collections-sets-and-maps.html)
 
 ## Запуск
 
@@ -10,11 +31,16 @@
 
 ```powershell
 .\mvnw.cmd "-Dtest=CollectionsExercisesTest,CollectionsContractsTest" test
+java -cp target/classes ru.learn.collections.QueueDemo
+java -cp target/classes ru.learn.collections.BlockingQueuesDemo
+java -cp target/classes ru.learn.collections.ConcurrentCollectionsDemo
 ```
 
-В IntelliJ IDEA можно запустить [CollectionsExercisesTest](../../../../../../src/test/java/ru/learn/collections/CollectionsExercisesTest.java) и [CollectionsContractsTest](../../../../../../src/test/java/ru/learn/collections/CollectionsContractsTest.java) по отдельности.
+В IntelliJ IDEA запускай `main` из любого класса `*Demo` или отдельно [CollectionsExercisesTest](../../../../../../src/test/java/ru/learn/collections/CollectionsExercisesTest.java) и [CollectionsContractsTest](../../../../../../src/test/java/ru/learn/collections/CollectionsContractsTest.java).
 
 ## Задачи для live coding
+
+Для каждой задачи сначала запиши ожидаемый результат и выбери коллекцию. Затем сравни своё решение с кодом и запусти тесты. Объясни, какая операция определяет сложность, какой нужен порядок и сколько памяти занимает решение.
 
 ### 1. Убрать повторы, сохранив первое появление
 
@@ -71,6 +97,17 @@
 
 </details>
 
+### 6. Найти кратчайший путь в графе без весов
+
+С Вокзала можно доехать до Музея или Парка. Из Музея есть путь в Школу, оттуда в Аэропорт. Из Парка есть прямой маршрут в Аэропорт. Найди минимальное число переездов из Вокзала в Аэропорт. Рёбра ориентированные. Отсутствие маршрута обозначь `-1`, путь из вершины в саму себя имеет длину `0`. Входные вершины и списки соседей заданы без `null`, отсутствующий ключ означает отсутствие исходящих рёбер.
+
+<details>
+<summary>Подсказка и разбор</summary>
+
+`ArrayDeque` хранит вершины в FIFO-порядке. Первая встреча вершины при таком обходе даёт её минимальное расстояние. Записывай расстояние при постановке в очередь, чтобы циклы и несколько путей к одной вершине не добавляли её повторно. В примере ответ `2`. Для обхода достижимой части графа время O(V + E), память O(V). [Решение shortestDistance](CollectionsExercises.java)
+
+</details>
+
 ## Предскажи результат и проверь
 
 Предскажи результат для каждого случая. Затем открой [CollectionsContractsTest](../../../../../../src/test/java/ru/learn/collections/CollectionsContractsTest.java) и сверь ответ с проверками и комментариями.
@@ -85,15 +122,13 @@
 | Итератор удаляет два чётных числа подряд | Почему после удаления первого числа следующий элемент не пропускается. |
 | В `CopyOnWriteArrayList` добавили подписчика после создания итератора | Кто получит уведомление в текущем обходе и кто попадёт в следующий. |
 
-## Запускаемые примеры из проекта
-
-- [QueueDemo](QueueDemo.java) и [StackDemo](StackDemo.java) показывают разницу FIFO и LIFO. Запусти `main` и проверь, что вернёт `poll` после извлечения всех элементов очереди.
-- [LinkedHashMapDemo](LinkedHashMapDemo.java) печатает ключи в порядке вставки. Сравни с `new TreeMap<>(map)` для тех же записей.
-- [ConcurrentCollectionsDemo](../cuncurrent/shared/ConcurrentCollectionsDemo.java) показывает обновление счётчика через `merge` и рассылку по снимку списка. [BlockingQueueDemo](../cuncurrent/coordination/BlockingQueueDemo.java) показывает ожидание места и задач в очереди.
-- [TwoSums](../leet/code/easy/TwoSums.java) и [LongestSubstringWithoutRepeatingCharacters](../leet/code/easy/LongestSubstringWithoutRepeatingCharacters.java) дают две задачи на быстрый поиск по ключу и проверку наличия в окне.
+Для очередей предскажи, примется ли третья задача в буфер на две записи и почему `DelayQueue.poll()` может вернуть `null` при `size() == 1`. Затем запусти [BlockingQueuesDemo](BlockingQueuesDemo.java) и [PriorityQueuesDemo](PriorityQueuesDemo.java). В [ConcurrentQueuesDemo](ConcurrentQueuesDemo.java) сравни передачу без буфера с постановкой задания, пока получателя нет.
 
 ## Мини-собеседование на 20 минут
 
 1. **5 минут.** Сравни `ArrayList`, `LinkedList` и `ArrayDeque`. Уточнение: сколько стоит пройти `LinkedList` через `get(i)`?
 2. **5 минут.** Объясни `HashMap.put` и `HashMap.get`. Уточнение: что случится, если хеши двух ключей совпадают, а `equals` возвращает `false`?
-3. **10 минут.** Реши задачу на `k` наибольших чисел. Объясни, почему в голове кучи нужен минимум, и проверь `k = 0`, повторы и вход короче `k`.
+3. **5 минут.** Разбери ограниченный буфер заданий. Сравни `offer`, `put` и `offer` с таймаутом. Объясни, почему проверка `isEmpty()` не гарантирует результат следующего `poll`.
+4. **5 минут.** Покажи, как два потока могут потерять обновление в последовательности `get` → `put`. Выбери метод `ConcurrentHashMap` для счётчика и сравни с требованиями к обходу списка подписчиков.
+
+Дополнительные задачи на быстрый поиск и скользящее окно есть в [TwoSums](../leet/code/easy/TwoSums.java) и [LongestSubstringWithoutRepeatingCharacters](../leet/code/easy/LongestSubstringWithoutRepeatingCharacters.java).

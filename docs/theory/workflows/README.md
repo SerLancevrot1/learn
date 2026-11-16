@@ -7,7 +7,7 @@
 | Тема | Где читать |
 | --- | --- |
 | События, шлюзы, таймеры, корреляция, оркестрация и выбор движка | [BPMN](bpmn.md) |
-| Camunda 7 и 8, Zeebe, job workers, переменные, повторы и incidents | [Camunda](camunda.md) |
+| Обработка заказа, подключение Java, Zeebe, job workers, повторы и incidents | [Camunda для начинающих](camunda.md#гайд-для-начинающих) · [Конспект](camunda.md#ответ-за-минуту) |
 
 **Практика:** [обработка заказа в Camunda 8](../../labs/camunda/README.md)
 
