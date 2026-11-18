@@ -4,6 +4,8 @@
 
 [Конспекты](docs/theory/README.md) · [Практикум собеседований](docs/labs/spring-postgres-outbox.md) · [Все лабораторные](docs/labs/README.md)
 
+Для короткой тренировки открой [маршрут повторения по конспектам](docs/theory/README.md#повторение-перед-собеседованием). В каждом блоке есть вопросы с раскрываемыми ответами.
+
 Для повторного интервью на Java Tech Lead пройди [маршрут по фидбеку](docs/interview/tech-lead.md) с упражнениями по Observability, Nginx, Kafka, OAuth, восстановлению PostgreSQL, Outbox и JPA.
 
 Для вопросов о нагрузочном тестировании разбери [k6, профили нагрузки и диагностику под нагрузкой](docs/theory/operations/k6.md#вопросы-на-собеседовании).

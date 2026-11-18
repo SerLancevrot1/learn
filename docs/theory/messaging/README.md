@@ -5,7 +5,9 @@
 | Тема | Где читать |
 | --- | --- |
 | Партиции, offset, порядок, репликация, транзакции | [Kafka](kafka.md) |
+| Compaction, Kafka Streams, event time и совместимость схем | [Потоки и контракты Kafka](kafka-streams-and-contracts.md) |
 | Exchanges, очереди, confirm, ack, prefetch и DLX | [RabbitMQ](rabbitmq.md) |
+| Asynchronous confirms, восстановление channel, предел unacked и redrive | [Восстановление RabbitMQ](rabbitmq-recovery.md) |
 | Как связать отправку и обработку с транзакцией БД | [Inbox, Outbox и CDC](delivery-patterns.md) |
 
 ## Зачем брокер и какие бывают модели

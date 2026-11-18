@@ -8,6 +8,8 @@
 | --- | --- |
 | Два указателя, скользящее окно, бинарный поиск, стек и куча | [Основные приёмы](algorithms.md) |
 | Деревья, графы, backtracking и динамическое программирование | [Деревья и следующие главы](algorithms.md#10-деревья) |
+| Разностный массив, sweep line, 0–1 BFS, критический путь и k-way merge | [Дополнительные алгоритмические приёмы](advanced-techniques.md) |
+| Дерево Фенвика, граф состояний и взвешенные интервалы | [Состояние и запросы](state-and-queries.md) |
 
 **Практика:** [решения задач](../../../src/main/java/ru/learn/leet/code/easy/) · [пример со скользящим окном](../../../src/main/java/ru/learn/leet/code/easy/LongestSubstringWithoutRepeatingCharacters.java)
 
