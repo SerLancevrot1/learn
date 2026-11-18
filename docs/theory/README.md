@@ -15,7 +15,7 @@
 | [BPMN и Camunda](workflows/README.md) | Модели процессов, движки, задания и повторная обработка |
 | [Безопасность](security/README.md) | TLS, mTLS, OAuth 2.0, OIDC и Spring Security |
 | [Эксплуатация](operations/README.md) | Docker, Kubernetes, метрики, логи, трассировки и алерты |
-| [Рабочие заметки](engineering/README.md) | Git с нуля, работа через IntelliJ IDEA, постановка задач ИИ и проверка результата |
+| [Рабочие заметки](engineering/README.md) | [Терминал Linux и PowerShell с нуля](engineering/terminal.md), Git, IntelliJ IDEA, работа с ИИ и Codex, промпты, skills, субагенты и Spec Kit |
 
 Проект собирается под Java 17: см. [pom.xml](../../pom.xml). В конспектах отдельно помечены возможности новых версий Java.
 
