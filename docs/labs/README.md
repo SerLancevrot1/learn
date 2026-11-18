@@ -4,6 +4,7 @@
 
 | Что изучить | Где запустить |
 | --- | --- |
+| Git: коммиты, ветки, конфликты, командная работа и восстановление | [13 лабораторных в отдельной песочнице](git/README.md) |
 | Redis, Kafka, RabbitMQ, MongoDB и Data Lake через тесты | [Практикум по внешним сервисам](../../LABS.md) |
 | Spring proxy, транзакции PostgreSQL и доставка событий | [Spring, PostgreSQL и Outbox/Inbox](spring-postgres-outbox.md) |
 | Гарантии Kafka при отказе реплик | [Стенд Kafka](kafka/README.md) |
